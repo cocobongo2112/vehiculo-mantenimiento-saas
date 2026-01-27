@@ -1,0 +1,19 @@
+<h1>Nuevo Cliente</h1>
+
+<% if(error){ %>
+<p style="color:red;"><%= error %></p>
+<% } %>
+
+<form method="POST">
+  Nombre:<br>
+  <input name="nombre" value="<%= values.nombre %>" required><br><br>
+  Teléfono:<br>
+  <input name="telefono" value="<%= values.telefono %>"><br><br>
+  Email:<br>
+  <input name="email" value="<%= values.email %>"><br><br>
+  Dirección:<br>
+  <input name="direccion" value="<%= values.direccion %>"><br><br>
+
+  <button>Guardar</button>
+</form>
+<a href="/taller/clientes">Volver</a>
