@@ -1,0 +1,28 @@
+<h1>Vehículos</h1>
+<a href="/taller/vehiculos/new">+ Nuevo Vehículo</a>
+<br><br>
+
+<table border="1" cellpadding="8">
+<tr>
+  <th>ID</th><th>Cliente</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Placa</th><th>Acciones</th>
+</tr>
+
+<% vehiculos.forEach(v => { %>
+<tr>
+  <td><%= v.id %></td>
+  <td><%= v.cliente %></td>
+  <td><%= v.marca %></td>
+  <td><%= v.modelo %></td>
+  <td><%= v.anio %></td>
+  <td><%= v.placa %></td>
+  <td>
+    <a href="/taller/vehiculos/<%= v.id %>/edit">Editar</a>
+    <form action="/taller/vehiculos/<%= v.id %>/delete" method="POST" style="display:inline;">
+      <button>Eliminar</button>
+    </form>
+  </td>
+</tr>
+<% }) %>
+</table>
+
+<a href="/taller/dashboard">Volver</a>
