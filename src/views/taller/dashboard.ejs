@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+</head>
+<body>
+  <h1>Dashboard Taller</h1>
+  <p>Bienvenido: <b><%= userSession.nombre %></b></p>
+
+  <h3>Total de órdenes</h3>
+  <p><b><%= total %></b></p>
+
+  <h3>Órdenes por estado</h3>
+  <ul>
+    <% porEstado.forEach(e => { %>
+      <li><b><%= e.estado %>:</b> <%= e.cantidad %></li>
+    <% }) %>
+  </ul>
+
+  <h3>Próximas entregas</h3>
+  <table border="1" cellpadding="8">
+    <tr><th>Folio</th><th>Estado</th><th>Entrega</th><th>Detalle</th></tr>
+    <% proximas.forEach(o => { %>
+      <tr>
+        <td><%= o.folio %></td>
+        <td><%= o.estado %></td>
+        <td><%= o.fecha_entrega %></td>
+        <td><a href="/taller/ordenes/<%= o.id %>">Ver</a></td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <br>
+  <a href="/taller/clientes">Clientes</a> |
+  <a href="/taller/vehiculos">Vehículos</a> |
+  <a href="/taller/ordenes">Órdenes</a> |
+  <a href="/auth/logout">Cerrar sesión</a>
+</body>
+</html>

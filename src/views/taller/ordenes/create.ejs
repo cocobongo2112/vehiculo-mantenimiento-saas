@@ -1,0 +1,31 @@
+<h1>Nueva Orden</h1>
+
+<% if(error){ %><p style="color:red;"><%= error %></p><% } %>
+
+<form method="POST">
+Cliente:<br>
+<select name="cliente_id" required>
+  <option value="">-- Selecciona --</option>
+  <% clientes.forEach(c => { %>
+    <option value="<%= c.id %>"><%= c.nombre %></option>
+  <% }) %>
+</select><br><br>
+
+Vehículo:<br>
+<select name="vehiculo_id" required>
+  <option value="">-- Selecciona --</option>
+  <% vehiculos.forEach(v => { %>
+    <option value="<%= v.id %>"><%= v.marca %> <%= v.modelo %> (<%= v.placa %>)</option>
+  <% }) %>
+</select><br><br>
+
+Descripción:<br>
+<textarea name="descripcion"><%= values.descripcion %></textarea><br><br>
+
+Fecha estimada entrega:<br>
+<input type="date" name="fecha_entrega" value="<%= values.fecha_entrega %>"><br><br>
+
+<button>Guardar</button>
+</form>
+
+<a href="/taller/ordenes">Volver</a>

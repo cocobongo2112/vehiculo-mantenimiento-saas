@@ -1,0 +1,26 @@
+<h1>Órdenes de Servicio</h1>
+<a href="/taller/ordenes/new">+ Nueva Orden</a>
+<br><br>
+
+<table border="1" cellpadding="8">
+<tr>
+  <th>ID</th><th>Folio</th><th>Cliente</th><th>Vehículo</th><th>Estado</th><th>Acciones</th>
+</tr>
+
+<% ordenes.forEach(o => { %>
+<tr>
+  <td><%= o.id %></td>
+  <td><a href="/taller/ordenes/<%= o.id %>"><%= o.folio %></a></td>
+  <td><%= o.cliente %></td>
+  <td><%= o.marca %> <%= o.modelo %> (<%= o.placa %>)</td>
+  <td><%= o.estado %></td>
+  <td>
+    <form action="/taller/ordenes/<%= o.id %>/delete" method="POST" style="display:inline;">
+      <button>Eliminar</button>
+    </form>
+  </td>
+</tr>
+<% }) %>
+</table>
+
+<a href="/taller/dashboard">Volver</a>
