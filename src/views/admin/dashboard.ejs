@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+</head>
+<body>
+  <h1>Dashboard Administrador</h1>
+  <p>Bienvenido: <b><%= userSession.nombre %></b> (<%= userSession.role %>)</p>
+
+  <h3>Métricas generales</h3>
+  <ul>
+    <li><b>Usuarios:</b> <%= kpis.usuarios %> (Activos: <%= kpis.usuariosActivos %>)</li>
+    <li><b>Clientes:</b> <%= kpis.clientes %></li>
+    <li><b>Vehículos:</b> <%= kpis.vehiculos %></li>
+    <li><b>Órdenes:</b> <%= kpis.ordenes %></li>
+  </ul>
+
+  <h3>Órdenes por estado</h3>
+  <ul>
+    <% ordenesPorEstado.forEach(o => { %>
+      <li><b><%= o.estado %>:</b> <%= o.cantidad %></li>
+    <% }) %>
+  </ul>
+
+  <h3>Últimos usuarios registrados</h3>
+  <table border="1" cellpadding="8">
+    <tr>
+      <th>ID</th><th>Nombre</th><th>Email</th><th>Activo</th><th>Fecha</th>
+    </tr>
+    <% ultimosUsuarios.forEach(u => { %>
+      <tr>
+        <td><%= u.id %></td>
+        <td><%= u.nombre %></td>
+        <td><%= u.email %></td>
+        <td><%= u.activo ? "Sí" : "No" %></td>
+        <td><%= u.created_at %></td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <br>
+  <a href="/admin/users">Gestionar usuarios</a> |
+  <a href="/auth/logout">Cerrar sesión</a>
+</body>
+</html>
