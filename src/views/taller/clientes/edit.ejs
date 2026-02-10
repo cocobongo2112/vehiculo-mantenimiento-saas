@@ -1,0 +1,15 @@
+<h1>Editar Cliente</h1>
+
+<form method="POST">
+  Nombre:<br>
+  <input name="nombre" value="<%= cliente.nombre %>" required><br><br>
+  Teléfono:<br>
+  <input name="telefono" value="<%= cliente.telefono %>"><br><br>
+  Email:<br>
+  <input name="email" value="<%= cliente.email %>"><br><br>
+  Dirección:<br>
+  <input name="direccion" value="<%= cliente.direccion %>"><br><br>
+
+  <button>Actualizar</button>
+</form>
+<a href="/taller/clientes">Volver</a>

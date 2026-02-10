@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= title %></title>
+</head>
+<body>
+<h1>Clientes</h1>
+<p>Usuario: <%= userSession.nombre %></p>
+
+<a href="/taller/clientes/new">+ Nuevo Cliente</a>
+<br><br>
+
+<table border="1" cellpadding="8">
+<tr>
+  <th>ID</th><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Acciones</th>
+</tr>
+<% clientes.forEach(c => { %>
+<tr>
+  <td><%= c.id %></td>
+  <td><%= c.nombre %></td>
+  <td><%= c.telefono %></td>
+  <td><%= c.email %></td>
+  <td>
+    <a href="/taller/clientes/<%= c.id %>/edit">Editar</a>
+    <form action="/taller/clientes/<%= c.id %>/delete" method="POST" style="display:inline;">
+      <button>Eliminar</button>
+    </form>
+  </td>
+</tr>
+<% }) %>
+</table>
+
+<br>
+<a href="/taller/dashboard">Volver</a>
+</body>
+</html>
