@@ -53,3 +53,17 @@ exports.updateEstado = async (id, estado) => {
 exports.delete = async (id) => {
   return await db.query("DELETE FROM ordenes_servicio WHERE id=?", [id]);
 };
+
+exports.getByFolioPublic = async (folio) => {
+  const rows = await db.query(`
+    SELECT o.folio, o.estado, o.descripcion, o.fecha_entrega, o.created_at,
+           c.nombre AS cliente, v.marca, v.modelo, v.placa
+    FROM ordenes_servicio o
+    INNER JOIN clientes c ON c.id = o.cliente_id
+    INNER JOIN vehiculos v ON v.id = o.vehiculo_id
+    WHERE o.folio = ?
+    LIMIT 1
+  `, [folio]);
+
+  return rows.length ? rows[0] : null;
+};

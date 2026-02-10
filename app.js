@@ -32,6 +32,8 @@
   app.use("/taller/clientes", require("./src/routes/taller.clientes.routes"));
   app.use("/taller/vehiculos", require("./src/routes/taller.vehiculos.routes"));
   app.use("/taller/ordenes", require("./src/routes/taller.ordenes.routes"));
+  app.use("/api/chatbot", require("./src/routes/api.chatbot.routes"));
+  app.use("/", require("./src/routes/public.routes"));
 
   // Server
   const PORT = process.env.PORT || 3000;

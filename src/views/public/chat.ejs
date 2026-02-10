@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <style>
+    body{ font-family: Arial; padding: 20px; }
+    #box{ width: 420px; border:1px solid #ccc; padding:12px; border-radius:10px; }
+    #msgs{ height: 260px; overflow:auto; border:1px solid #eee; padding:10px; margin-bottom:10px; }
+    .m{ margin:6px 0; }
+    .bot{ color:#0b5; }
+    .me{ color:#06c; text-align:right; }
+    input{ width: 75%; padding:8px; }
+    button{ padding:8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Chatbot - Estado de tu vehículo</h1>
+
+  <div id="box">
+    <div id="msgs"></div>
+
+    <form id="chatForm">
+      <input id="txt" placeholder="Escribe tu folio (ej: OS-123456)" autocomplete="off" />
+      <button>Enviar</button>
+    </form>
+  </div>
+
+  <script>
+    const msgs = document.getElementById("msgs");
+    const form = document.getElementById("chatForm");
+    const txt = document.getElementById("txt");
+
+    function add(text, cls){
+      const div = document.createElement("div");
+      div.className = "m " + cls;
+      div.textContent = text;
+      msgs.appendChild(div);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    add("Hola 👋 Escribe tu folio para consultar el estado de tu vehículo.", "bot");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const folio = txt.value.trim();
+      if(!folio) return;
+
+      add(folio, "me");
+      txt.value = "";
+
+      try{
+        const res = await fetch(`/api/chatbot/estado?folio=${encodeURIComponent(folio)}`);
+        const data = await res.json();
+
+        if(!data.ok){
+          add(data.msg || "No pude procesar tu solicitud.", "bot");
+          return;
+        }
+        add(data.msg, "bot");
+      }catch(err){
+        add("Error de conexión. Intenta de nuevo.", "bot");
+      }
+    });
+  </script>
+</body>
+</html>
