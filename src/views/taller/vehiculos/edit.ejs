@@ -1,0 +1,26 @@
+<h1>Editar Vehículo</h1>
+
+<form method="POST">
+Cliente:<br>
+<select name="cliente_id">
+  <% clientes.forEach(c => { %>
+    <option value="<%= c.id %>" <%= c.id == vehiculo.cliente_id ? "selected" : "" %>><%= c.nombre %></option>
+  <% }) %>
+</select><br><br>
+
+Marca:<br>
+<input name="marca" value="<%= vehiculo.marca %>" required><br><br>
+
+Modelo:<br>
+<input name="modelo" value="<%= vehiculo.modelo %>" required><br><br>
+
+Año:<br>
+<input name="anio" value="<%= vehiculo.anio %>"><br><br>
+
+Placa:<br>
+<input name="placa" value="<%= vehiculo.placa %>"><br><br>
+
+<button>Actualizar</button>
+</form>
+
+<a href="/taller/vehiculos">Volver</a>

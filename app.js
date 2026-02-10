@@ -30,6 +30,7 @@
   app.use("/admin", require("./src/routes/admin.routes"));
   app.use("/admin/users", require("./src/routes/admin.users.routes"));
   app.use("/taller/clientes", require("./src/routes/taller.clientes.routes"));
+  app.use("/taller/vehiculos", require("./src/routes/taller.vehiculos.routes"));
 
   // Server
   const PORT = process.env.PORT || 3000;
