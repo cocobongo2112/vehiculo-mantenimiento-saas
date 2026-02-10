@@ -1,0 +1,27 @@
+<h1>Detalle Orden: <%= orden.folio %></h1>
+
+<p><b>Cliente:</b> <%= orden.cliente %></p>
+<p><b>Vehículo:</b> <%= orden.marca %> <%= orden.modelo %> (<%= orden.placa %>)</p>
+<p><b>Estado:</b> <%= orden.estado %></p>
+<p><b>Descripción:</b> <%= orden.descripcion || "-" %></p>
+<p><b>Entrega:</b> <%= orden.fecha_entrega || "-" %></p>
+
+<h3>Cambiar estado</h3>
+<form method="POST" action="/taller/ordenes/<%= orden.id %>/estado">
+  <select name="estado">
+    <option <%= orden.estado==='RECIBIDO'?'selected':'' %>>RECIBIDO</option>
+    <option <%= orden.estado==='EN_PROCESO'?'selected':'' %>>EN_PROCESO</option>
+    <option <%= orden.estado==='LISTO'?'selected':'' %>>LISTO</option>
+    <option <%= orden.estado==='ENTREGADO'?'selected':'' %>>ENTREGADO</option>
+  </select>
+  <button>Actualizar</button>
+</form>
+
+<h3>Eventos / Bitácora</h3>
+<ul>
+  <% eventos.forEach(e => { %>
+    <li><%= e.created_at %> - <b><%= e.evento %></b> - <%= e.nota || "" %></li>
+  <% }) %>
+</ul>
+
+<a href="/taller/ordenes">Volver</a>
