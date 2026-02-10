@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>Usuarios</h1>
+  <p>Sesión: <b><%= userSession.nombre %></b> (<%= userSession.role %>)</p>
+
+  <a href="/admin/users/new">+ Crear usuario</a>
+  <br><br>
+
+  <table border="1" cellpadding="8">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Activo</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% users.forEach(u => { %>
+      <tr>
+        <td><%= u.id %></td>
+        <td><%= u.nombre %></td>
+        <td><%= u.email %></td>
+        <td><%= u.role %></td>
+        <td><%= u.activo ? "Sí" : "No" %></td>
+        <td>
+          <form method="POST" action="/admin/users/<%= u.id %>/toggle" style="display:inline;">
+            <button type="submit"><%= u.activo ? "Desactivar" : "Activar" %></button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+
+  <br>
+  <a href="/auth/logout">Cerrar sesión</a>
+</body>
+</html>

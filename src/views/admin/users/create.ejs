@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <h1>Crear usuario</h1>
+  <a href="/admin/users">← Volver</a>
+
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+  <% } %>
+
+  <form method="POST" action="/admin/users/new">
+    <label>Nombre</label><br>
+    <input name="nombre" value="<%= values.nombre %>" required /><br><br>
+
+    <label>Email</label><br>
+    <input type="email" name="email" value="<%= values.email %>" required /><br><br>
+
+    <label>Contraseña</label><br>
+    <input type="password" name="password" required /><br><br>
+
+    <label>Rol</label><br>
+    <select name="role_id" required>
+      <option value="">-- Selecciona --</option>
+      <% roles.forEach(r => { %>
+        <option value="<%= r.id %>" <%= String(values.role_id) === String(r.id) ? "selected" : "" %>>
+          <%= r.nombre %>
+        </option>
+      <% }) %>
+    </select>
+    <br><br>
+
+    <button type="submit">Crear</button>
+  </form>
+</body>
+</html>
