@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+</head>
+<body>
+  <h1>Reportes</h1>
+  <p>Sesión: <b><%= userSession.nombre %></b> (<%= userSession.role %>)</p>
+
+  <h3>Resumen por estado</h3>
+  <ul>
+    <% porEstado.forEach(s => { %>
+      <li><b><%= s.estado %>:</b> <%= s.cantidad %></li>
+    <% }) %>
+  </ul>
+
+  <h3>Filtros</h3>
+  <form method="GET" action="/admin/reportes">
+    Desde: <input type="date" name="desde" value="<%= filtros.desde || '' %>">
+    Hasta: <input type="date" name="hasta" value="<%= filtros.hasta || '' %>">
+
+    Estado:
+    <select name="estado">
+      <option value="">-- Todos --</option>
+      <option value="RECIBIDO" <%= filtros.estado==='RECIBIDO'?'selected':'' %>>RECIBIDO</option>
+      <option value="EN_PROCESO" <%= filtros.estado==='EN_PROCESO'?'selected':'' %>>EN_PROCESO</option>
+      <option value="LISTO" <%= filtros.estado==='LISTO'?'selected':'' %>>LISTO</option>
+      <option value="ENTREGADO" <%= filtros.estado==='ENTREGADO'?'selected':'' %>>ENTREGADO</option>
+    </select>
+
+    <button>Aplicar</button>
+  </form>
+
+  <br>
+  <a href="/admin/reportes/csv?desde=<%= filtros.desde || '' %>&hasta=<%= filtros.hasta || '' %>&estado=<%= filtros.estado || '' %>">
+    Descargar CSV
+  </a>
+
+  <h3>Órdenes (máx 200)</h3>
+  <table border="1" cellpadding="8">
+    <tr>
+      <th>Folio</th><th>Estado</th><th>Cliente</th><th>Vehículo</th><th>Creación</th><th>Entrega</th>
+    </tr>
+    <% ordenes.forEach(o => { %>
+      <tr>
+        <td><%= o.folio %></td>
+        <td><%= o.estado %></td>
+        <td><%= o.cliente %></td>
+        <td><%= o.marca %> <%= o.modelo %> (<%= o.placa %>)</td>
+        <td><%= o.created_at %></td>
+        <td><%= o.fecha_entrega || '-' %></td>
+      </tr>
+    <% }) %>
+  </table>
+
+  <br>
+  <a href="/admin/dashboard">Volver</a> |
+  <a href="/auth/logout">Cerrar sesión</a>
+</body>
+</html>

@@ -1,6 +1,7 @@
 const Orden = require("../../models/orden.model");
 const Cliente = require("../../models/cliente.model");
 const Vehiculo = require("../../models/vehiculo.model");
+const { notifyN8N } = require("../../utils/n8n");
 
 function generarFolio() {
   const ts = Date.now().toString().slice(-6);
@@ -68,6 +69,28 @@ exports.changeEstado = async (req, res) => {
 
   await Orden.updateEstado(id, estado);
   await Orden.addEvento({ orden_id: id, evento: "ESTADO", nota: `Cambio a ${estado}` });
+
+  // Traer datos de la orden para la notificación
+  const orden = await Orden.getById(id);
+
+  // Disparar a n8n (IA + notificación)
+  try {
+    await notifyN8N({
+      evento: "ORDEN_ESTADO_CAMBIO",
+      fecha: new Date().toISOString(),
+      orden: {
+        id: orden.id,
+        folio: orden.folio,
+        estado: orden.estado,
+        fecha_entrega: orden.fecha_entrega,
+        descripcion: orden.descripcion
+      },
+      cliente: { nombre: orden.cliente },
+      vehiculo: { marca: orden.marca, modelo: orden.modelo, placa: orden.placa }
+    });
+  } catch (e) {
+    console.error("⚠️ No se pudo notificar a n8n:", e.message);
+  }
 
   res.redirect(`/taller/ordenes/${id}`);
 };
