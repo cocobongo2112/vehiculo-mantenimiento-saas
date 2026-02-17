@@ -1,7 +1,9 @@
 const Cliente = require("../../models/cliente.model");
 
 exports.list = async (req, res) => {
-  const clientes = await Cliente.getAll();
+  const empresa_id = req.session.user.empresa_id;
+  const clientes = await Cliente.getAllByEmpresa(empresa_id);
+
   res.render("taller/clientes/list", {
     title: "Clientes",
     userSession: req.session.user,
@@ -28,7 +30,7 @@ exports.create = async (req, res) => {
     });
   }
 
-  await Cliente.create({ nombre, telefono, email, direccion });
+  await Cliente.create({ nombre, telefono, email, direccion, empresa_id});
   res.redirect("/taller/clientes");
 };
 

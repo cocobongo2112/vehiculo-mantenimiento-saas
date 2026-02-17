@@ -1,0 +1,31 @@
+<nav class="sticky top-0 z-50 backdrop-blur border-b border-white/10 bg-slate-950/70">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="/" class="flex items-center gap-2 font-bold tracking-tight">
+      <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 text-slate-950">⚙️</span>
+      <span class="text-lg">TallerOS</span>
+      <span class="text-xs px-2 py-1 rounded-full bg-white/10 border border-white/10">SaaS</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-6 text-sm">
+      <a class="hover:text-cyan-300" href="/servicios">Servicios</a>
+      <a class="hover:text-cyan-300" href="/nosotros">Nosotros</a>
+      <a class="hover:text-cyan-300" href="/contacto">Contacto</a>
+      <a class="hover:text-cyan-300" href="/busqueda">Búsqueda</a>
+      <a class="hover:text-cyan-300" href="/chat">Chatbot</a>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <% if (userSession && userSession.role) { %>
+        <% if (userSession.role === "ADMIN") { %>
+          <a class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10" href="/admin/dashboard">Panel Admin</a>
+        <% } else { %>
+          <a class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10" href="/taller/dashboard">Panel Taller</a>
+        <% } %>
+        <a class="px-3 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/30" href="/auth/logout">Salir</a>
+      <% } else { %>
+        <a class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10" href="/auth/login">Iniciar sesión</a>
+        <a class="px-3 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold rounded-xl" href="/contacto">Solicitar demo</a>
+      <% } %>
+    </div>
+  </div>
+</nav>

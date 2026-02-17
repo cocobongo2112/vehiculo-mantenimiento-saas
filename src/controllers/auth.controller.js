@@ -9,7 +9,8 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   const rows = await db.query(`
-    SELECT u.id, u.nombre, u.email, u.password_hash, r.nombre AS role
+    SELECT u.id, u.nombre, u.email, u.password_hash, u.empresa_id,
+           r.nombre AS role
     FROM users u
     INNER JOIN roles r ON r.id = u.role_id
     WHERE u.email = ? AND u.activo = 1
@@ -22,18 +23,20 @@ exports.login = async (req, res) => {
 
   const user = rows[0];
   const ok = await bcrypt.compare(password, user.password_hash);
+
   if (!ok) {
     return res.render("auth/login", { title: "Iniciar sesión", error: "Credenciales inválidas" });
   }
 
+  // ✅ guardar sesión con empresa_id
   req.session.user = {
     id: user.id,
     nombre: user.nombre,
     email: user.email,
-    role: user.role
+    role: user.role,
+    empresa_id: user.empresa_id
   };
 
-  // Redirección por rol
   if (user.role === "ADMIN") return res.redirect("/admin/dashboard");
   return res.redirect("/taller/dashboard");
 };

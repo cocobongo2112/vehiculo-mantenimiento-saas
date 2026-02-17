@@ -33,10 +33,10 @@
     <button>Aplicar</button>
   </form>
 
-  <br>
-  <a href="/admin/reportes/csv?desde=<%= filtros.desde || '' %>&hasta=<%= filtros.hasta || '' %>&estado=<%= filtros.estado || '' %>">
-    Descargar CSV
-  </a>
+<br>
+<a href="/admin/reportes/pdf?desde=<%= filtros.desde || '' %>&hasta=<%= filtros.hasta || '' %>&estado=<%= filtros.estado || '' %>">
+  Descargar PDF
+</a>
 
   <h3>Órdenes (máx 200)</h3>
   <table border="1" cellpadding="8">

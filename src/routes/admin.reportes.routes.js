@@ -4,5 +4,6 @@ const ctrl = require("../controllers/admin/reportes.controller");
 
 router.get("/", isAuth, isAdmin, ctrl.view);
 router.get("/csv", isAuth, isAdmin, ctrl.exportCSV);
+router.get("/pdf", isAuth, isAdmin, ctrl.exportPDF);
 
 module.exports = router;

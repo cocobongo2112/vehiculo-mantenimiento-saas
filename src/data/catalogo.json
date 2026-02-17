@@ -1,0 +1,4 @@
+[
+  { "id": 1, "title": "Cambio de aceite", "description": "Aceite y filtro, revisión general.", "category": "Mantenimiento", "tags": ["aceite","motor","servicio"], "date": "2026-02-10", "price": 650 },
+  { "id": 2, "title": "Alineación y balanceo", "description": "Alineación, balanceo y calibración.", "category": "Llantas", "tags": ["alineacion","balanceo"], "date": "2026-02-12", "price": 450 }
+]

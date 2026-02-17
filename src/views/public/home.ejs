@@ -1,0 +1,63 @@
+<% layout('layouts/main') %>
+
+<section class="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
+  <div class="absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+
+  <div class="grid md:grid-cols-2 gap-10 items-center">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">PLATAFORMA SaaS PARA TALLERES</p>
+      <h1 class="mt-3 text-4xl md:text-5xl font-extrabold leading-tight">
+        Control total del taller: <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-500">clientes</span>,
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-fuchsia-500">vehículos</span> y órdenes.
+      </h1>
+      <p class="mt-4 text-slate-300">
+        Dashboard, CRM, reportes PDF y notificaciones automáticas por Telegram con n8n + IA.
+      </p>
+
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/contacto" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold">
+          Solicitar demo
+        </a>
+        <a href="/busqueda" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10">
+          Probar búsqueda
+        </a>
+      </div>
+
+      <div class="mt-8 grid grid-cols-3 gap-3 text-xs text-slate-300">
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+          <p class="text-slate-400">Automatización</p>
+          <p class="font-semibold">n8n + Webhooks</p>
+        </div>
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+          <p class="text-slate-400">Reportes</p>
+          <p class="font-semibold">CSV / PDF</p>
+        </div>
+        <div class="p-3 rounded-2xl bg-white/5 border border-white/10">
+          <p class="text-slate-400">Atención</p>
+          <p class="font-semibold">Chatbot web</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Vista rápida</h3>
+      <p class="text-sm text-slate-300 mt-1">Así se ve el flujo real del sistema.</p>
+
+      <div class="mt-5 space-y-3 text-sm">
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10">
+          ✅ Crear cliente → registrar vehículo
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10">
+          ✅ Crear orden → cambiar estado (RECIBIDO → EN PROCESO → LISTO)
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10">
+          ✅ Telegram automático al cliente (n8n + IA)
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10">
+          ✅ Reporte PDF por fechas
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,7 +1,10 @@
 const db = require("../config/db");
 
-exports.getAll = async () => {
-  return await db.query("SELECT * FROM clientes ORDER BY id DESC");
+exports.getAllByEmpresa = async (empresa_id) => {
+  return await db.query(
+    "SELECT * FROM clientes WHERE empresa_id=? ORDER BY id DESC",
+    [empresa_id]
+  );
 };
 
 exports.getById = async (id) => {
