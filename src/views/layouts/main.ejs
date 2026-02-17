@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title || "TallerOS" %></title>
+  <title><%= title || "Smart Garage" %></title>
 
-  <!-- Tailwind (rápido y pro) -->
+  <meta name="description" content="Smart Garage - Plataforma SaaS para gestión de mantenimiento vehicular con CRM, dashboards, chatbot, IA y automatización con n8n." />
+
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -18,7 +19,7 @@
 
 <body class="min-h-screen bg-slate-950 text-slate-100">
   <div class="bg-grid min-h-screen">
-    <%- include("../partials/navbar", { userSession }) %>
+    <%- include("../partials/navbar") %>
 
     <main class="max-w-6xl mx-auto px-4 py-10">
       <%- body %>

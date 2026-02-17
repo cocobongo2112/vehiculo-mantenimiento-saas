@@ -1,0 +1,84 @@
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <p class="text-cyan-300 text-sm tracking-wide">CONTACTO</p>
+  <h1 class="mt-3 text-4xl md:text-5xl font-extrabold">Hablemos de tu taller</h1>
+  <p class="mt-4 text-slate-300 max-w-3xl">
+    Solicita una demo de Smart Garage o pregúntanos sobre implementación. Respuesta rápida.
+  </p>
+
+  <div class="mt-10 grid md:grid-cols-2 gap-6">
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-xl font-semibold">Enviar solicitud</h3>
+
+      <!-- Solo UI (si quieres backend, lo hacemos después) -->
+      <form class="mt-5 space-y-4">
+        <div>
+          <label class="text-sm text-slate-300">Nombre</label>
+          <input class="mt-1 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+                 placeholder="Tu nombre" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-300">Email</label>
+          <input type="email" class="mt-1 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+                 placeholder="correo@ejemplo.com" />
+        </div>
+        <div>
+          <label class="text-sm text-slate-300">Mensaje</label>
+          <textarea rows="4" class="mt-1 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+                    placeholder="Cuéntanos qué necesitas"></textarea>
+        </div>
+
+        <button type="button"
+                class="w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold">
+          Enviar (demo)
+        </button>
+        <p class="text-xs text-slate-500">
+          * En demo académica, el formulario puede ser solo UI (o lo conectamos a DB/n8n después).
+        </p>
+      </form>
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-xl font-semibold">Información</h3>
+      <div class="mt-4 space-y-3 text-slate-300">
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10">
+          <p class="text-sm text-slate-400">Correo</p>
+          <p class="font-semibold">contacto@smartgarage.app</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10">
+          <p class="text-sm text-slate-400">Horario</p>
+          <p class="font-semibold">Lun–Sáb · 9:00 a 18:00</p>
+        </div>
+        <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10">
+          <p class="text-sm text-slate-400">Soporte</p>
+          <p class="font-semibold">Chatbot web + Notificaciones Telegram</p>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <a class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30"
+           href="https://wa.me/5210000000000" target="_blank">
+          <span>💚</span> WhatsApp (demo)
+        </a>
+        <p class="mt-2 text-xs text-slate-500">Cambia el número cuando quieras.</p>
+      </div>
+
+      <div class="mt-10">
+        <h4 class="text-lg font-semibold">FAQ</h4>
+        <div class="mt-4 space-y-3">
+          <details class="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
+            <summary class="cursor-pointer font-semibold">¿Smart Garage funciona como SaaS?</summary>
+            <p class="mt-2 text-slate-300 text-sm">Sí, es accesible desde web y se puede escalar por empresa/taller.</p>
+          </details>
+          <details class="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
+            <summary class="cursor-pointer font-semibold">¿Incluye IA y automatización?</summary>
+            <p class="mt-2 text-slate-300 text-sm">Integra n8n + IA para notificaciones, alertas y generación de reportes.</p>
+          </details>
+          <details class="rounded-2xl border border-white/10 bg-slate-900/40 p-4">
+            <summary class="cursor-pointer font-semibold">¿Hay chatbot para clientes?</summary>
+            <p class="mt-2 text-slate-300 text-sm">Sí, permite consultar el estado del vehículo por folio y recibir información rápida.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

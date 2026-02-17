@@ -45,7 +45,6 @@
   app.use("/api/chatbot", require("./src/routes/api.chatbot.routes"));
   app.use("/", require("./src/routes/public.routes"));
   app.use("/admin/reportes", require("./src/routes/admin.reportes.routes"));
-  app.use("/", require("./src/routes/public.routes"));
   app.use("/api/search", require("./src/routes/api.search.routes"));
 
   // Server
