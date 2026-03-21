@@ -1,15 +1,104 @@
-<h1>Editar Cliente</h1>
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">CRM · SMART GARAGE</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Editar Cliente</h1>
+      <p class="mt-2 text-slate-300">
+        Actualiza la información de contacto para el seguimiento y notificaciones.
+      </p>
+    </div>
 
-<form method="POST">
-  Nombre:<br>
-  <input name="nombre" value="<%= cliente.nombre %>" required><br><br>
-  Teléfono:<br>
-  <input name="telefono" value="<%= cliente.telefono %>"><br><br>
-  Email:<br>
-  <input name="email" value="<%= cliente.email %>"><br><br>
-  Dirección:<br>
-  <input name="direccion" value="<%= cliente.direccion %>"><br><br>
+    <div class="flex flex-wrap gap-2">
+      <a href="/taller/clientes"
+         class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        ← Volver a clientes
+      </a>
 
-  <button>Actualizar</button>
-</form>
-<a href="/taller/clientes">Volver</a>
+      <form method="POST" action="/taller/clientes/<%= cliente.id %>/delete"
+            onsubmit="return confirm('¿Eliminar este cliente?');">
+        <button class="px-4 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-sm text-rose-200">
+          Eliminar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <form method="POST" class="mt-8 grid lg:grid-cols-3 gap-6">
+    <!-- Columna principal -->
+    <div class="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Datos del cliente</h3>
+      <p class="text-sm text-slate-300 mt-1">Edita y guarda los cambios.</p>
+
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-300">Nombre</label>
+          <input name="nombre" value="<%= cliente.nombre %>" required
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Ej: Juan Pérez" />
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-300">Teléfono</label>
+          <input name="telefono" value="<%= cliente.telefono || '' %>"
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Ej: 4421234567" />
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-300">Email</label>
+          <input name="email" type="email" value="<%= cliente.email || '' %>"
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Ej: cliente@mail.com" />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-300">Dirección</label>
+          <input name="direccion" value="<%= cliente.direccion || '' %>"
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Calle, número, colonia, ciudad..." />
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna lateral -->
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Guardar cambios</h3>
+      <p class="text-sm text-slate-300 mt-1">Confirma antes de actualizar.</p>
+
+      <div class="mt-5 rounded-2xl border border-white/10 bg-slate-900/50 p-4 text-sm text-slate-200">
+        <p class="text-xs text-slate-400">Vista previa</p>
+        <div class="mt-2 space-y-1">
+          <div><b>Nombre:</b> <span id="prevNombre"><%= cliente.nombre %></span></div>
+          <div><b>Tel:</b> <span id="prevTel"><%= cliente.telefono || '-' %></span></div>
+          <div><b>Email:</b> <span id="prevEmail"><%= cliente.email || '-' %></span></div>
+        </div>
+      </div>
+
+      <button class="mt-6 w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold">
+        Actualizar cliente
+      </button>
+
+      <div class="mt-4 text-xs text-slate-400">
+        Mantén datos correctos para notificaciones y seguimiento.
+      </div>
+    </div>
+  </form>
+</section>
+
+<script>
+  const nombre = document.querySelector('input[name="nombre"]');
+  const telefono = document.querySelector('input[name="telefono"]');
+  const email = document.querySelector('input[name="email"]');
+
+  const prevNombre = document.getElementById("prevNombre");
+  const prevTel = document.getElementById("prevTel");
+  const prevEmail = document.getElementById("prevEmail");
+
+  function refresh() {
+    prevNombre.textContent = nombre.value || "-";
+    prevTel.textContent = telefono.value || "-";
+    prevEmail.textContent = email.value || "-";
+  }
+
+  [nombre, telefono, email].forEach(i => i?.addEventListener("input", refresh));
+</script>

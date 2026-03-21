@@ -9,13 +9,12 @@ exports.login = async (req, res) => {
   const { email, password } = req.body;
 
   const rows = await db.query(`
-    SELECT u.id, u.nombre, u.email, u.password_hash, u.empresa_id,
-           r.nombre AS role
-    FROM users u
-    INNER JOIN roles r ON r.id = u.role_id
-    WHERE u.email = ? AND u.activo = 1
-    LIMIT 1
-  `, [email]);
+  SELECT u.id, u.nombre, u.email, u.password_hash, u.empresa_id, r.nombre AS role
+  FROM users u
+  INNER JOIN roles r ON r.id = u.role_id
+  WHERE u.email = ? AND u.activo = 1
+  LIMIT 1
+`, [email]);
 
   if (!rows.length) {
     return res.render("auth/login", { title: "Iniciar sesión", error: "Credenciales inválidas" });
@@ -30,13 +29,13 @@ exports.login = async (req, res) => {
 
   // ✅ guardar sesión con empresa_id
   req.session.user = {
-    id: user.id,
-    nombre: user.nombre,
-    email: user.email,
-    role: user.role,
-    empresa_id: user.empresa_id
-  };
-
+  id: user.id,
+  nombre: user.nombre,
+  email: user.email,
+  role: user.role,
+  empresa_id: user.empresa_id
+};
+  
   if (user.role === "ADMIN") return res.redirect("/admin/dashboard");
   return res.redirect("/taller/dashboard");
 };
