@@ -1,0 +1,27 @@
+---
+description: "Reglas para generar arquitectura Next.js App Router dentro del prototipo"
+globs: "next-blueprint-demo/**/*.{ts,tsx}"
+alwaysApply: false
+---
+
+# Arquitectura Next.js
+
+Cuando trabajes dentro de `next-blueprint-demo`, sigue estas reglas:
+
+- Usar App Router.
+- Usar Server Components por defecto.
+- Usar `"use client"` solamente cuando se necesite estado, eventos, hooks o interacción del usuario.
+- Colocar páginas en `src/app`.
+- Colocar componentes reutilizables en `src/components`.
+- Colocar servicios o lógica de negocio en `src/services` o `src/lib`.
+- Colocar tipos compartidos en `src/types`.
+- Colocar pruebas cerca del archivo probado o dentro de `src/__tests__`.
+
+# Convenciones
+
+- Componentes React en PascalCase.
+- Hooks personalizados con prefijo `use`.
+- Funciones utilitarias en camelCase.
+- Evitar lógica de negocio pesada dentro de componentes visuales.
+- Preferir props tipadas con TypeScript.
+- No usar `any` salvo justificación.

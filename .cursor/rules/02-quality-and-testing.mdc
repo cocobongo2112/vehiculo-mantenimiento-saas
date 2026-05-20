@@ -1,0 +1,29 @@
+---
+description: "Reglas de calidad, ESLint y pruebas TDD para el proyecto"
+globs: "next-blueprint-demo/**/*.{ts,tsx,test.ts,test.tsx}"
+alwaysApply: false
+---
+
+# Calidad de código
+
+- Ejecutar ESLint después de generar o modificar código.
+- Corregir errores de lint sin cambiar el comportamiento esperado.
+- Mantener funciones pequeñas y con nombres claros.
+- Evitar duplicación innecesaria.
+- Mantener imports ordenados.
+
+# TDD
+
+Cuando se solicite TDD:
+
+1. Crear primero una prueba que falle.
+2. Ejecutar la prueba.
+3. Implementar el código mínimo necesario.
+4. Ejecutar nuevamente la prueba hasta que pase.
+5. Refactorizar si es necesario.
+
+# Pruebas
+
+- Usar Vitest para pruebas unitarias.
+- Usar nombres de pruebas descriptivos.
+- No probar detalles internos innecesarios; probar comportamiento.

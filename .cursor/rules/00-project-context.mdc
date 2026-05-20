@@ -1,0 +1,22 @@
+---
+description: "Contexto general del proyecto Smart Garage y reglas base de trabajo"
+globs:
+alwaysApply: true
+---
+
+# Contexto del proyecto
+
+Este repositorio pertenece al proyecto Smart Garage, un SaaS para gestión de talleres mecánicos, órdenes de servicio, clientes, vehículos, usuarios, reportes y notificaciones.
+
+El proyecto actual está desarrollado con Node.js, Express, EJS y MySQL. La práctica académica propone una evolución hacia Next.js App Router, React Server Components, Server Actions, Client Components y Prisma ORM.
+
+# Reglas generales
+
+- No romper la aplicación actual Express/EJS.
+- Si se genera código Next.js, colocarlo dentro de `next-blueprint-demo/`.
+- Usar TypeScript para los archivos Next.js.
+- Usar nombres descriptivos en español o inglés técnico consistente.
+- Separar lógica, presentación, servicios y pruebas.
+- No inventar rutas ni modelos que no estén relacionados con el SaaS de talleres.
+- Explicar cualquier cambio importante antes de modificar múltiples archivos.
+- No exponer variables de entorno, tokens, contraseñas ni credenciales.
