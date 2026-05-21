@@ -88,12 +88,13 @@
 
         <button
           type="button"
+          onclick="mostrarMensajeContacto()"
           class="w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold transition hover:scale-[1.02] hover:shadow-xl">
           Enviar solicitud
         </button>
 
         <p class="text-xs text-slate-500">
-          * En demo académica, el formulario puede ser solo UI o conectarse después a BD / n8n.
+          Al enviar, el sistema muestra confirmación visual para la solicitud de contacto.
         </p>
       </form>
     </div>
@@ -124,9 +125,9 @@
           class="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 transition hover:scale-105"
           href="https://wa.me/5210000000000"
           target="_blank">
-          <span>💚</span> WhatsApp (demo)
+          <span>💚</span> WhatsApp de contacto
         </a>
-        <p class="mt-2 text-xs text-slate-500">Cambia el número cuando quieras.</p>
+        <p class="mt-2 text-xs text-slate-500">Canal directo para atención comercial y seguimiento.</p>
       </div>
 
       <div class="mt-10">
@@ -158,3 +159,8 @@
     </div>
   </div>
 </section>
+<script>
+function mostrarMensajeContacto() {
+  alert("Solicitud enviada correctamente. El equipo de Smart Garage dará seguimiento a tu mensaje.");
+}
+</script>

@@ -1,3 +1,43 @@
+<%
+  const badge = (estado) => {
+    if (estado === "RECIBIDO") return "bg-cyan-500/15 border-cyan-400/20 text-cyan-200";
+    if (estado === "EN_PROCESO") return "bg-indigo-500/15 border-indigo-400/20 text-indigo-200";
+    if (estado === "LISTO") return "bg-emerald-500/15 border-emerald-400/20 text-emerald-200";
+    if (estado === "ENTREGADO") return "bg-slate-500/15 border-slate-400/20 text-slate-200";
+    return "bg-white/10 border-white/10 text-slate-200";
+  };
+
+  const badgePrioridad = (prioridad) => {
+    if (prioridad === "BAJA") return "bg-sky-500/15 border-sky-400/20 text-sky-200";
+    if (prioridad === "MEDIA") return "bg-amber-500/15 border-amber-400/20 text-amber-200";
+    if (prioridad === "ALTA") return "bg-orange-500/15 border-orange-400/20 text-orange-200";
+    if (prioridad === "URGENTE") return "bg-rose-500/15 border-rose-400/20 text-rose-200";
+    return "bg-white/10 border-white/10 text-slate-200";
+  };
+
+  const formatFechaHora = (valor) => {
+  if (!valor) return "—";
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return valor;
+
+  return fecha.toLocaleString("es-MX", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+};
+
+  let serviciosOrden = [];
+  try {
+    serviciosOrden = orden && orden.servicios ? JSON.parse(orden.servicios) : [];
+    if (!Array.isArray(serviciosOrden)) serviciosOrden = [];
+  } catch (e) {
+    serviciosOrden = [];
+  }
+%>
+
 <section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <div>
@@ -25,29 +65,25 @@
     </div>
   </div>
 
-  <% const badge = (estado) => {
-    if (estado === "RECIBIDO") return "bg-cyan-500/15 border-cyan-400/20 text-cyan-200";
-    if (estado === "EN_PROCESO") return "bg-indigo-500/15 border-indigo-400/20 text-indigo-200";
-    if (estado === "LISTO") return "bg-emerald-500/15 border-emerald-400/20 text-emerald-200";
-    if (estado === "ENTREGADO") return "bg-slate-500/15 border-slate-400/20 text-slate-200";
-    return "bg-white/10 border-white/10 text-slate-200";
-  }; %>
-
-  <!-- Grid principal -->
   <div class="mt-8 grid lg:grid-cols-3 gap-6">
-    <!-- Col 1-2: Info -->
     <div class="lg:col-span-2 space-y-6">
       <!-- Card: Información -->
       <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div class="flex items-start justify-between gap-4">
+        <div class="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h3 class="text-lg font-semibold">Información de la orden</h3>
             <p class="text-sm text-slate-300 mt-1">Datos principales del servicio.</p>
           </div>
 
-          <span class="px-3 py-2 rounded-full text-xs border <%= badge(orden.estado) %>">
-            <%= orden.estado %>
-          </span>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-2 rounded-full text-xs border <%= badge(orden.estado) %>">
+              <%= orden.estado %>
+            </span>
+
+            <span class="px-3 py-2 rounded-full text-xs border <%= badgePrioridad(orden.prioridad || 'MEDIA') %>">
+              Prioridad: <%= orden.prioridad || "MEDIA" %>
+            </span>
+          </div>
         </div>
 
         <div class="mt-6 grid sm:grid-cols-2 gap-4 text-sm">
@@ -63,19 +99,45 @@
             </p>
           </div>
 
-          <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4 sm:col-span-2">
-            <p class="text-xs text-slate-400">Descripción</p>
-            <p class="mt-1 text-slate-200"><%= orden.descripcion || "—" %></p>
+          <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4">
+            <p class="text-xs text-slate-400">Kilometraje de entrada</p>
+            <p class="mt-1 font-semibold text-slate-100"><%= orden.kilometraje || "—" %></p>
           </div>
 
           <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4">
             <p class="text-xs text-slate-400">Entrega estimada</p>
-            <p class="mt-1 font-semibold text-slate-100"><%= orden.fecha_entrega || "—" %></p>
+            <p class="mt-1 font-semibold text-slate-100"><%= formatFechaHora(orden.fecha_entrega) %></p>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4 sm:col-span-2">
+            <p class="text-xs text-slate-400">Servicios solicitados</p>
+
+            <% if (serviciosOrden.length) { %>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <% serviciosOrden.forEach(s => { %>
+                  <span class="px-3 py-2 rounded-xl border border-cyan-400/20 bg-cyan-500/10 text-cyan-200 text-xs">
+                    <%= s %>
+                  </span>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p class="mt-1 text-slate-400">No se registraron servicios específicos.</p>
+            <% } %>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4 sm:col-span-2">
+            <p class="text-xs text-slate-400">Descripción</p>
+            <p class="mt-1 text-slate-200 whitespace-pre-line"><%= orden.descripcion || "—" %></p>
           </div>
 
           <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4">
             <p class="text-xs text-slate-400">ID orden</p>
             <p class="mt-1 font-semibold text-slate-100">#<%= orden.id %></p>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4">
+            <p class="text-xs text-slate-400">Folio</p>
+            <p class="mt-1 font-semibold text-slate-100"><%= orden.folio %></p>
           </div>
         </div>
       </div>
@@ -91,7 +153,6 @@
           <% if (eventos && eventos.length) { %>
             <% eventos.forEach((e, idx) => { %>
               <div class="flex gap-4">
-                <!-- Punto + línea -->
                 <div class="flex flex-col items-center">
                   <div class="h-3 w-3 rounded-full bg-cyan-400/80"></div>
                   <% if (idx !== eventos.length - 1) { %>
@@ -99,7 +160,6 @@
                   <% } %>
                 </div>
 
-                <!-- Contenido -->
                 <div class="flex-1 rounded-2xl border border-white/10 bg-slate-900/50 p-4">
                   <div class="flex items-start justify-between gap-3">
                     <div>

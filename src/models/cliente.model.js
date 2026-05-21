@@ -14,8 +14,11 @@ exports.disable = async (id, empresa_id) => {
   );
 };
 
-exports.getById = async (id) => {
-  const rows = await db.query("SELECT * FROM clientes WHERE id = ?", [id]);
+exports.getById = async (id, empresa_id) => {
+  const rows = await db.query(
+    "SELECT * FROM clientes WHERE id=? AND empresa_id=? LIMIT 1",
+    [id, empresa_id]
+  );
   return rows.length ? rows[0] : null;
 };
 
@@ -27,14 +30,27 @@ exports.create = async (data) => {
   );
 };
 
-exports.update = async (id, data) => {
+exports.update = async (id, empresa_id, data) => {
   const { nombre, telefono, email, direccion } = data;
   return await db.query(
-    "UPDATE clientes SET nombre=?, telefono=?, email=?, direccion=? WHERE id=?",
-    [nombre, telefono, email, direccion, id]
+    "UPDATE clientes SET nombre=?, telefono=?, email=?, direccion=? WHERE id=? AND empresa_id=?",
+    [nombre, telefono, email, direccion, id, empresa_id]
   );
 };
 
 exports.softDelete = async (id) => {
   return await db.query("UPDATE clientes SET activo=0 WHERE id=?", [id]);
+};
+
+exports.searchByEmpresa = async (empresa_id, q) => {
+  const like = `%${q}%`;
+  return await db.query(
+    `SELECT *
+     FROM clientes
+     WHERE empresa_id = ?
+       AND activo = 1
+       AND (nombre LIKE ? OR email LIKE ? OR telefono LIKE ?)
+     ORDER BY id DESC`,
+    [empresa_id, like, like, like]
+  );
 };

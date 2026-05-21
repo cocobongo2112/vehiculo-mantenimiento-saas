@@ -1,19 +1,18 @@
-async function notifyN8N(payload) {
-  if (!process.env.N8N_WEBHOOK_URL) return;
+const axios = require("axios");
 
-  const res = await fetch(process.env.N8N_WEBHOOK_URL, {
-    method: "POST",
+exports.notifyN8N = async (payload) => {
+  const webhookUrl = process.env.N8N_WEBHOOK_URL;
+
+  if (!webhookUrl) {
+    throw new Error("N8N_WEBHOOK_URL no está configurado");
+  }
+
+  const response = await axios.post(webhookUrl, payload, {
     headers: {
-      "Content-Type": "application/json",
-      "x-webhook-token": process.env.N8N_WEBHOOK_TOKEN || ""
+      "Content-Type": "application/json"
     },
-    body: JSON.stringify(payload)
+    timeout: 10000
   });
 
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(`n8n webhook failed: ${res.status} ${txt}`);
-  }
-}
-
-module.exports = { notifyN8N };
+  return response.data;
+};

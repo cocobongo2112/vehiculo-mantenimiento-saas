@@ -1,48 +1,80 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
-  <link rel="stylesheet" href="/css/styles.css" />
-</head>
-<body>
-  <h1>Usuarios</h1>
-  <p>Sesión: <b><%= userSession.nombre %></b> (<%= userSession.role %>)</p>
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">ADMIN · USUARIOS</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Administración de usuarios</h1>
+      <p class="mt-2 text-slate-300">Gestiona accesos, roles y estado operativo de las cuentas del sistema.</p>
+    </div>
 
-  <a href="/admin/users/new">+ Crear usuario</a>
-  <br><br>
+    <div class="flex flex-wrap gap-2">
+      <a href="/admin/dashboard" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">Volver al dashboard</a>
+      <a href="/admin/users/new" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold text-sm">+ Crear usuario</a>
+    </div>
+  </div>
 
-  <table border="1" cellpadding="8">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Rol</th>
-        <th>Activo</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody>
-    <% users.forEach(u => { %>
-      <tr>
-        <td><%= u.id %></td>
-        <td><%= u.nombre %></td>
-        <td><%= u.email %></td>
-        <td><%= u.role %></td>
-        <td><%= u.activo ? "Sí" : "No" %></td>
-        <td>
-          <form method="POST" action="/admin/users/<%= u.id %>/toggle" style="display:inline;">
-            <button type="submit"><%= u.activo ? "Desactivar" : "Activar" %></button>
-          </form>
-        </td>
-      </tr>
-    <% }) %>
-    </tbody>
-  </table>
+  <div class="mt-8 grid md:grid-cols-3 gap-4">
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <p class="text-sm text-slate-400">Usuarios totales</p>
+      <p class="mt-2 text-3xl font-extrabold"><%= users.length %></p>
+    </div>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <p class="text-sm text-slate-400">Activos</p>
+      <p class="mt-2 text-3xl font-extrabold"><%= users.filter(u => Number(u.activo) === 1).length %></p>
+    </div>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <p class="text-sm text-slate-400">Roles</p>
+      <p class="mt-2 text-lg font-semibold">ADMIN · TALLER</p>
+    </div>
+  </div>
 
-  <br>
-  <a href="/auth/logout">Cerrar sesión</a>
-</body>
-</html>
+  <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="text-slate-400">
+        <tr class="border-b border-white/10">
+          <th class="text-left py-3 pr-4">ID</th>
+          <th class="text-left py-3 pr-4">Nombre</th>
+          <th class="text-left py-3 pr-4">Email</th>
+          <th class="text-left py-3 pr-4">Rol</th>
+          <th class="text-left py-3 pr-4">Alta</th>
+          <th class="text-left py-3 pr-4">Estado</th>
+          <th class="text-right py-3">Acción</th>
+        </tr>
+      </thead>
+      <tbody class="text-slate-200">
+        <% if (users && users.length) { %>
+          <% users.forEach(u => { %>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="py-4 pr-4 text-slate-400">#<%= u.id %></td>
+              <td class="py-4 pr-4">
+                <div class="font-semibold"><%= u.nombre %></div>
+              </td>
+              <td class="py-4 pr-4 text-slate-300"><%= u.email %></td>
+              <td class="py-4 pr-4">
+                <span class="px-2 py-1 rounded-full text-xs border <%= u.role === 'ADMIN' ? 'bg-cyan-500/15 border-cyan-500/30 text-cyan-200' : 'bg-indigo-500/15 border-indigo-500/30 text-indigo-200' %>"><%= u.role %></span>
+              </td>
+              <td class="py-4 pr-4 text-slate-300"><%= u.created_at || '—' %></td>
+              <td class="py-4 pr-4">
+                <% if (u.activo) { %>
+                  <span class="px-2 py-1 rounded-full text-xs bg-emerald-500/15 border border-emerald-500/30 text-emerald-200">Activo</span>
+                <% } else { %>
+                  <span class="px-2 py-1 rounded-full text-xs bg-rose-500/15 border border-rose-500/30 text-rose-200">Inactivo</span>
+                <% } %>
+              </td>
+              <td class="py-4 text-right">
+                <form method="POST" action="/admin/users/<%= u.id %>/toggle" class="inline">
+                  <button type="submit" class="px-3 py-2 rounded-xl border text-xs font-medium <%= u.activo ? 'border-rose-500/30 bg-rose-500/15 text-rose-200 hover:bg-rose-500/25' : 'border-emerald-500/30 bg-emerald-500/15 text-emerald-200 hover:bg-emerald-500/25' %>">
+                    <%= u.activo ? 'Desactivar' : 'Activar' %>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="7" class="py-10 text-center text-slate-400">No hay usuarios registrados todavía.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>

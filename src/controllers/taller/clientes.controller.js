@@ -4,13 +4,16 @@ const db = require("../../config/db");
 
 exports.list = async (req, res) => {
   const empresa_id = req.session.user.empresa_id || 1;
-  const clientes = await Cliente.getAllByEmpresa(empresa_id);
+  const q = (req.query.q || "").trim();
+  const clientes = q
+    ? await Cliente.searchByEmpresa(empresa_id, q)
+    : await Cliente.getAllByEmpresa(empresa_id);
 
   res.render("taller/clientes/list", {
     title: "Clientes",
     userSession: req.session.user,
     clientes,
-    filtros: {} // por si luego usas búsqueda
+    filtros: { q }
   });
 };
 
@@ -45,7 +48,7 @@ exports.create = async (req, res) => {
 exports.viewDetail = async (req, res) => {
   const empresa_id = req.session.user.empresa_id || 1;
 
-  const cliente = await Cliente.getById(req.params.id);
+  const cliente = await Cliente.getById(req.params.id, empresa_id);
   if (!cliente) return res.redirect("/taller/clientes");
 
   if (!cliente || Number(cliente.empresa_id) !== Number(empresa_id) || Number(cliente.activo) !== 1) {
@@ -79,7 +82,7 @@ exports.viewDetail = async (req, res) => {
 exports.viewEdit = async (req, res) => {
   const empresa_id = req.session.user.empresa_id || 1;
 
-  const cliente = await Cliente.getById(req.params.id);
+  const cliente = await Cliente.getById(req.params.id, empresa_id);
   if (!cliente) return res.redirect("/taller/clientes");
 
   if (!cliente || Number(cliente.empresa_id) !== Number(empresa_id) || Number(cliente.activo) !== 1) {
@@ -99,7 +102,8 @@ exports.viewEdit = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  await Cliente.update(req.params.id, req.body);
+  const empresa_id = req.session.user.empresa_id || 1;
+  await Cliente.update(req.params.id, empresa_id, req.body);
   res.redirect("/taller/clientes");
 };
 

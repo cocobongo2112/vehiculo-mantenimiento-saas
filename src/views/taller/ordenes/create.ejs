@@ -60,6 +60,37 @@
       </div>
 
       <div class="mt-6">
+  <label class="text-sm text-slate-300">Servicios solicitados</label>
+  <div class="mt-3 grid sm:grid-cols-2 gap-3">
+    <% const serviciosBase = [
+      "Cambio de aceite",
+      "Afinación",
+      "Frenos",
+      "Suspensión",
+      "Diagnóstico",
+      "Alineación y balanceo",
+      "Cambio de llantas",
+      "Revisión de batería",
+      "Sistema eléctrico",
+      "Escaneo"
+    ]; %>
+
+    <% serviciosBase.forEach(servicio => { %>
+      <label class="flex items-center gap-3 rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 cursor-pointer hover:bg-white/5">
+        <input
+          type="checkbox"
+          name="servicios[]"
+          value="<%= servicio %>"
+          <%= (values.servicios || []).includes(servicio) ? 'checked' : '' %>
+        />
+        <span class="text-sm text-slate-200"><%= servicio %></span>
+      </label>
+    <% }) %>
+  </div>
+  <p class="mt-2 text-xs text-slate-500">Puedes marcar varios servicios y complementar en la descripción.</p>
+</div>
+
+      <div class="mt-6">
         <label class="text-sm text-slate-300">Descripción del servicio</label>
         <textarea name="descripcion" rows="5" id="descripcion"
           class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
@@ -76,21 +107,58 @@
       <h3 class="text-lg font-semibold">Entrega & resumen</h3>
       <p class="text-sm text-slate-300 mt-1">Define fecha estimada y revisa antes de guardar.</p>
 
-      <div class="mt-6">
-        <label class="text-sm text-slate-300">Fecha estimada de entrega</label>
-        <input type="date" name="fecha_entrega" value="<%= values.fecha_entrega || '' %>" id="fechaEntrega"
-          class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40" />
-        <p class="mt-2 text-xs text-slate-500">Si queda vacía, la orden se crea sin fecha.</p>
-      </div>
+      <div class="mt-6 grid gap-4">
+  <div>
+    <label class="text-sm text-slate-300">Prioridad</label>
+    <select name="prioridad"
+      class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40">
+      <option value="BAJA" <%= values.prioridad === 'BAJA' ? 'selected' : '' %>>Baja</option>
+      <option value="MEDIA" <%= values.prioridad === 'MEDIA' ? 'selected' : '' %>>Media</option>
+      <option value="ALTA" <%= values.prioridad === 'ALTA' ? 'selected' : '' %>>Alta</option>
+      <option value="URGENTE" <%= values.prioridad === 'URGENTE' ? 'selected' : '' %>>Urgente</option>
+    </select>
+  </div>
 
-      <div class="mt-6 rounded-2xl border border-white/10 bg-slate-900/50 p-4">
-        <p class="text-xs text-slate-400">Resumen</p>
-        <div class="mt-2 text-sm text-slate-200 space-y-2">
-          <div><b>Cliente:</b> <span id="prevCliente">--</span></div>
-          <div><b>Vehículo:</b> <span id="prevVehiculo">--</span></div>
-          <div><b>Entrega:</b> <span id="prevEntrega">--</span></div>
-        </div>
-      </div>
+  <div>
+    <label class="text-sm text-slate-300">Kilometraje de entrada</label>
+    <input
+      type="number"
+      name="kilometraje"
+      min="0"
+      step="1"
+      value="<%= values.kilometraje || '' %>"
+      placeholder="Ej: 85420"
+      class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+    />
+    <p class="mt-2 text-xs text-slate-500">Opcional, pero recomendado para historial del vehículo.</p>
+  </div>
+
+  <div>
+  <label class="text-sm text-slate-300">Fecha estimada de entrega</label>
+  <input
+    type="datetime-local"
+    name="fecha_entrega"
+    value="<%= values.fecha_entrega || '' %>"
+    id="fechaEntrega"
+    class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+  />
+  <p class="mt-2 text-xs text-slate-500">
+    Puedes seleccionarla desde el calendario o escribirla manualmente, incluyendo la hora.
+  </p>
+  <p class="mt-2 text-xs text-slate-500">
+    Si queda vacía, la orden se crea sin fecha.
+  </p>
+</div>
+
+</div>
+
+      <div class="mt-2 text-sm text-slate-200 space-y-2">
+  <div><b>Cliente:</b> <span id="prevCliente">--</span></div>
+  <div><b>Vehículo:</b> <span id="prevVehiculo">--</span></div>
+  <div><b>Prioridad:</b> <span id="prevPrioridad"><%= values.prioridad || '--' %></span></div>
+  <div><b>Kilometraje:</b> <span id="prevKilometraje"><%= values.kilometraje || '--' %></span></div>
+  <div><b>Entrega:</b> <span id="prevEntrega">--</span></div>
+</div>
 
       <button
         class="mt-6 w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold"
@@ -112,6 +180,10 @@
   const descripcion = document.getElementById("descripcion");
   const contador = document.getElementById("contador");
   const fechaEntrega = document.getElementById("fechaEntrega");
+  const prioridadSelect = document.querySelector('select[name="prioridad"]');
+const kilometrajeInput = document.querySelector('input[name="kilometraje"]');
+const prevPrioridad = document.getElementById("prevPrioridad");
+const prevKilometraje = document.getElementById("prevKilometraje");
 
   const prevCliente = document.getElementById("prevCliente");
   const prevVehiculo = document.getElementById("prevVehiculo");
@@ -148,12 +220,28 @@
   }
 
   function actualizarPreview() {
-    prevCliente.textContent = clienteSelect.selectedOptions[0]?.textContent?.trim() || "--";
-    prevVehiculo.textContent = vehiculoSelect.selectedOptions[0]?.textContent?.trim() || "--";
+  prevCliente.textContent = clienteSelect.selectedOptions[0]?.textContent?.trim() || "--";
+  prevVehiculo.textContent = vehiculoSelect.selectedOptions[0]?.textContent?.trim() || "--";
+  prevPrioridad.textContent = prioridadSelect?.value || "--";
+  prevKilometraje.textContent = kilometrajeInput?.value || "--";
 
-    if (!fechaEntrega.value) prevEntrega.textContent = "--";
-    else prevEntrega.textContent = new Date(fechaEntrega.value + "T00:00:00").toLocaleDateString("es-MX");
+  if (!fechaEntrega.value) {
+    prevEntrega.textContent = "--";
+  } else {
+    const fecha = new Date(fechaEntrega.value);
+    if (Number.isNaN(fecha.getTime())) {
+      prevEntrega.textContent = fechaEntrega.value.replace("T", " ");
+    } else {
+      prevEntrega.textContent = fecha.toLocaleString("es-MX", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
   }
+}
 
   clienteSelect?.addEventListener("change", () => {
     filtrarVehiculos();
@@ -163,6 +251,8 @@
   vehiculoSelect?.addEventListener("change", actualizarPreview);
   fechaEntrega?.addEventListener("change", actualizarPreview);
   descripcion?.addEventListener("input", actualizarContador);
+  prioridadSelect?.addEventListener("change", actualizarPreview);
+kilometrajeInput?.addEventListener("input", actualizarPreview);
 
   // init
   actualizarContador();

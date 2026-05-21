@@ -92,3 +92,17 @@ function toggleAboutExtra() {
 
     extra.classList.toggle('open');
 }
+
+// CARRUSEL SIMPLE HOME
+const simpleCarouselImages = ["/img/1.png", "/img/2.png", "/img/3.png", "/img/4.png", "/img/5.png", "/img/6.png"];
+let simpleCarouselIndex = 0;
+setInterval(() => {
+  const img = document.getElementById("imgCarrusel");
+  if (!img) return;
+  simpleCarouselIndex = (simpleCarouselIndex + 1) % simpleCarouselImages.length;
+  img.style.opacity = 0;
+  setTimeout(() => {
+    img.src = simpleCarouselImages[simpleCarouselIndex];
+    img.style.opacity = 1;
+  }, 220);
+}, 3500);

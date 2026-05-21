@@ -1,14 +1,14 @@
 const router = require("express").Router();
-const { isAuth, isTaller } = require("../middlewares/auth.middleware");
+const { isAuth, isStaff } = require("../middlewares/auth.middleware");
 const ctrl = require("../controllers/taller/ordenes.controller");
 
-router.get("/", isAuth, isTaller, ctrl.list);
-router.get("/new", isAuth, isTaller, ctrl.viewCreate);
-router.post("/new", isAuth, isTaller, ctrl.create);
+router.get("/", isAuth, isStaff, ctrl.list);
+router.get("/new", isAuth, isStaff, ctrl.viewCreate);
+router.post("/new", isAuth, isStaff, ctrl.create);
 
-router.get("/:id", isAuth, isTaller, ctrl.viewDetail);
-router.post("/:id/estado", isAuth, isTaller, ctrl.changeEstado);
+router.get("/:id", isAuth, isStaff, ctrl.viewDetail);
+router.post("/:id/estado", isAuth, isStaff, ctrl.changeEstado);
 
-router.post("/:id/delete", isAuth, isTaller, ctrl.delete);
+router.post("/:id/delete", isAuth, isStaff, ctrl.delete);
 
 module.exports = router;
