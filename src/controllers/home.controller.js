@@ -1,7 +1,7 @@
 const db = require("../config/db");
 
 exports.home = (req, res) => {
-  res.render("home", { title: "SaaS Mantenimiento Vehicular" });
+  res.render("public/home", { title: "SaaS Mantenimiento Vehicular" });
 };
 
 exports.health = async (req, res) => {

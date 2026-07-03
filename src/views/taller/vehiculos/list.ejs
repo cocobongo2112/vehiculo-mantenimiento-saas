@@ -1,28 +1,45 @@
-<h1>Vehículos</h1>
-<a href="/taller/vehiculos/new">+ Nuevo Vehículo</a>
-<br><br>
+<section class="rounded-3xl border border-white/10 bg-white/5 p-8">
+  <div class="flex items-center justify-between">
+    <h1 class="text-3xl font-extrabold">Vehículos</h1>
+    <a href="/taller/vehiculos/new" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold">
+      + Nuevo Vehículo
+    </a>
+  </div>
 
-<table border="1" cellpadding="8">
-<tr>
-  <th>ID</th><th>Cliente</th><th>Marca</th><th>Modelo</th><th>Año</th><th>Placa</th><th>Acciones</th>
-</tr>
+  <div class="mt-6 overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="text-slate-400">
+        <tr class="border-b border-white/10">
+          <th class="text-left py-3 pr-4">Cliente</th>
+          <th class="text-left py-3 pr-4">Vehículo</th>
+          <th class="text-left py-3 pr-4">Placa</th>
+          <th class="text-left py-3 pr-4">Año</th>
+          <th class="text-left py-3 pr-4">Acciones</th>
+        </tr>
+      </thead>
+      <tbody class="text-slate-200">
+        <% if (vehiculos && vehiculos.length) { %>
+          <% vehiculos.forEach(v => { %>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="py-3 pr-4"><%= v.cliente_nombre %></td>
+              <td class="py-3 pr-4"><%= v.marca %> <%= v.modelo %></td>
+              <td class="py-3 pr-4"><%= v.placa %></td>
+              <td class="py-3 pr-4"><%= v.anio || "-" %></td>
+              <td class="py-3 pr-4 flex gap-2">
+                <a class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs"
+                   href="/taller/vehiculos/<%= v.id %>/edit">Editar</a>
 
-<% vehiculos.forEach(v => { %>
-<tr>
-  <td><%= v.id %></td>
-  <td><%= v.cliente %></td>
-  <td><%= v.marca %></td>
-  <td><%= v.modelo %></td>
-  <td><%= v.anio %></td>
-  <td><%= v.placa %></td>
-  <td>
-    <a href="/taller/vehiculos/<%= v.id %>/edit">Editar</a>
-    <form action="/taller/vehiculos/<%= v.id %>/delete" method="POST" style="display:inline;">
-      <button>Eliminar</button>
-    </form>
-  </td>
-</tr>
-<% }) %>
-</table>
-
-<a href="/taller/dashboard">Volver</a>
+                <form method="POST" action="/taller/vehiculos/<%= v.id %>/delete"
+                      onsubmit="return confirm('¿Desactivar vehículo? No se borrará, solo quedará oculto.')">
+                  <button class="px-3 py-2 rounded-xl bg-red-500/20 border border-red-500/30 text-xs">Desactivar</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr><td colspan="5" class="py-8 text-slate-400">No hay vehículos registrados.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>

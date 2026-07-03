@@ -1,62 +1,103 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
-</head>
-<body>
-  <h1>Reportes</h1>
-  <p>Sesión: <b><%= userSession.nombre %></b> (<%= userSession.role %>)</p>
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">ADMIN · REPORTES</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Reportes operativos</h1>
+      <p class="mt-2 text-slate-300">Consulta indicadores, filtra órdenes por periodo y exporta resultados en PDF o CSV.</p>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <a href="/admin/dashboard" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">Volver al dashboard</a>
+      <a href="/admin/reportes/csv?<%= queryString %>" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">Exportar CSV</a>
+      <a href="/admin/reportes/pdf?<%= queryString %>" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold text-sm">Exportar PDF</a>
+    </div>
+  </div>
 
-  <h3>Resumen por estado</h3>
-  <ul>
+  <div class="mt-8 grid lg:grid-cols-4 gap-4">
     <% porEstado.forEach(s => { %>
-      <li><b><%= s.estado %>:</b> <%= s.cantidad %></li>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <p class="text-sm text-slate-400">Estado</p>
+        <div class="mt-2 flex items-center justify-between gap-3">
+          <p class="text-lg font-semibold"><%= s.estado %></p>
+          <p class="text-3xl font-extrabold"><%= s.cantidad %></p>
+        </div>
+      </div>
     <% }) %>
-  </ul>
+  </div>
 
-  <h3>Filtros</h3>
-  <form method="GET" action="/admin/reportes">
-    Desde: <input type="date" name="desde" value="<%= filtros.desde || '' %>">
-    Hasta: <input type="date" name="hasta" value="<%= filtros.hasta || '' %>">
+  <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between gap-4 mb-5">
+      <div>
+        <h3 class="text-lg font-semibold">Filtros de consulta</h3>
+        <p class="text-sm text-slate-400">Usa fechas y estado para acotar el contenido del reporte y la exportación.</p>
+      </div>
+    </div>
 
-    Estado:
-    <select name="estado">
-      <option value="">-- Todos --</option>
-      <option value="RECIBIDO" <%= filtros.estado==='RECIBIDO'?'selected':'' %>>RECIBIDO</option>
-      <option value="EN_PROCESO" <%= filtros.estado==='EN_PROCESO'?'selected':'' %>>EN_PROCESO</option>
-      <option value="LISTO" <%= filtros.estado==='LISTO'?'selected':'' %>>LISTO</option>
-      <option value="ENTREGADO" <%= filtros.estado==='ENTREGADO'?'selected':'' %>>ENTREGADO</option>
-    </select>
+    <form method="GET" action="/admin/reportes" class="grid md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-sm text-slate-300">Desde</label>
+        <input type="date" name="desde" value="<%= filtros.desde || '' %>" class="mt-2 w-full rounded-2xl bg-slate-950/70 border border-white/10 px-4 py-3 text-slate-100 outline-none focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-400/20">
+      </div>
+      <div>
+        <label class="block text-sm text-slate-300">Hasta</label>
+        <input type="date" name="hasta" value="<%= filtros.hasta || '' %>" class="mt-2 w-full rounded-2xl bg-slate-950/70 border border-white/10 px-4 py-3 text-slate-100 outline-none focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-400/20">
+      </div>
+      <div>
+        <label class="block text-sm text-slate-300">Estado</label>
+        <select name="estado" class="mt-2 w-full rounded-2xl bg-slate-950/70 border border-white/10 px-4 py-3 text-slate-100 outline-none focus:border-cyan-400/40 focus:ring-2 focus:ring-cyan-400/20">
+          <option value="">Todos</option>
+          <option value="RECIBIDO" <%= filtros.estado==='RECIBIDO'?'selected':'' %>>RECIBIDO</option>
+          <option value="EN_PROCESO" <%= filtros.estado==='EN_PROCESO'?'selected':'' %>>EN PROCESO</option>
+          <option value="LISTO" <%= filtros.estado==='LISTO'?'selected':'' %>>LISTO</option>
+          <option value="ENTREGADO" <%= filtros.estado==='ENTREGADO'?'selected':'' %>>ENTREGADO</option>
+        </select>
+      </div>
+      <div class="flex items-end gap-2">
+        <button class="flex-1 px-4 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold">Aplicar filtros</button>
+        <a href="/admin/reportes" class="px-4 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm text-center">Limpiar</a>
+      </div>
+    </form>
+  </div>
 
-    <button>Aplicar</button>
-  </form>
+  <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 overflow-x-auto">
+    <div class="flex items-center justify-between gap-3 mb-5">
+      <div>
+        <h3 class="text-lg font-semibold">Órdenes incluidas en el reporte</h3>
+        <p class="text-sm text-slate-400">Máximo 200 registros visibles en pantalla.</p>
+      </div>
+      <span class="text-sm text-slate-400">Total mostrado: <%= ordenes.length %></span>
+    </div>
 
-<br>
-<a href="/admin/reportes/pdf?desde=<%= filtros.desde || '' %>&hasta=<%= filtros.hasta || '' %>&estado=<%= filtros.estado || '' %>">
-  Descargar PDF
-</a>
-
-  <h3>Órdenes (máx 200)</h3>
-  <table border="1" cellpadding="8">
-    <tr>
-      <th>Folio</th><th>Estado</th><th>Cliente</th><th>Vehículo</th><th>Creación</th><th>Entrega</th>
-    </tr>
-    <% ordenes.forEach(o => { %>
-      <tr>
-        <td><%= o.folio %></td>
-        <td><%= o.estado %></td>
-        <td><%= o.cliente %></td>
-        <td><%= o.marca %> <%= o.modelo %> (<%= o.placa %>)</td>
-        <td><%= o.created_at %></td>
-        <td><%= o.fecha_entrega || '-' %></td>
-      </tr>
-    <% }) %>
-  </table>
-
-  <br>
-  <a href="/admin/dashboard">Volver</a> |
-  <a href="/auth/logout">Cerrar sesión</a>
-</body>
-</html>
+    <table class="min-w-full text-sm">
+      <thead class="text-slate-400">
+        <tr class="border-b border-white/10">
+          <th class="text-left py-3 pr-4">Folio</th>
+          <th class="text-left py-3 pr-4">Estado</th>
+          <th class="text-left py-3 pr-4">Cliente</th>
+          <th class="text-left py-3 pr-4">Vehículo</th>
+          <th class="text-left py-3 pr-4">Creación</th>
+          <th class="text-left py-3">Entrega</th>
+        </tr>
+      </thead>
+      <tbody class="text-slate-200">
+        <% if (ordenes && ordenes.length) { %>
+          <% ordenes.forEach(o => { %>
+            <tr class="border-b border-white/5 hover:bg-white/5">
+              <td class="py-4 pr-4 font-semibold"><%= o.folio %></td>
+              <td class="py-4 pr-4">
+                <span class="px-2 py-1 rounded-full text-xs border border-white/10 bg-white/10"><%= o.estado %></span>
+              </td>
+              <td class="py-4 pr-4"><%= o.cliente %></td>
+              <td class="py-4 pr-4 text-slate-300"><%= o.marca %> <%= o.modelo %> (<%= o.placa %>)</td>
+              <td class="py-4 pr-4 text-slate-300"><%= o.created_at %></td>
+              <td class="py-4 text-slate-300"><%= o.fecha_entrega || '-' %></td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <tr>
+            <td colspan="6" class="py-10 text-center text-slate-400">No se encontraron órdenes con los filtros seleccionados.</td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,31 +1,261 @@
-<h1>Nueva Orden</h1>
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">TALLER · SMART GARAGE</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Nueva Orden</h1>
+      <p class="mt-2 text-slate-300">
+        Crea una orden de servicio y define entrega estimada. Después podrás cambiar estado y notificar por Telegram (n8n).
+      </p>
+    </div>
 
-<% if(error){ %><p style="color:red;"><%= error %></p><% } %>
+    <a href="/taller/ordenes" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+      ← Volver a órdenes
+    </a>
+  </div>
 
-<form method="POST">
-Cliente:<br>
-<select name="cliente_id" required>
-  <option value="">-- Selecciona --</option>
-  <% clientes.forEach(c => { %>
-    <option value="<%= c.id %>"><%= c.nombre %></option>
-  <% }) %>
-</select><br><br>
+  <% if(error){ %>
+    <div class="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-rose-200 text-sm">
+      <b>Error:</b> <%= error %>
+    </div>
+  <% } %>
 
-Vehículo:<br>
-<select name="vehiculo_id" required>
-  <option value="">-- Selecciona --</option>
-  <% vehiculos.forEach(v => { %>
-    <option value="<%= v.id %>"><%= v.marca %> <%= v.modelo %> (<%= v.placa %>)</option>
-  <% }) %>
-</select><br><br>
+  <form method="POST" class="mt-8 grid lg:grid-cols-3 gap-6" id="formOrden">
+    <!-- Columna 1: Cliente / Vehículo -->
+    <div class="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Datos principales</h3>
+      <p class="text-sm text-slate-300 mt-1">Selecciona el cliente y su vehículo.</p>
 
-Descripción:<br>
-<textarea name="descripcion"><%= values.descripcion %></textarea><br><br>
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-sm text-slate-300">Cliente</label>
+          <select name="cliente_id" required id="clienteSelect"
+                  class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40">
+            <option value="">-- Selecciona --</option>
+            <% clientes.forEach(c => { %>
+              <option value="<%= c.id %>" <%= values.cliente_id==c.id ? 'selected' : '' %>>
+                <%= c.nombre %>
+              </option>
+            <% }) %>
+          </select>
+          <p class="mt-2 text-xs text-slate-500">Tip: registra clientes en el módulo CRM.</p>
+        </div>
 
-Fecha estimada entrega:<br>
-<input type="date" name="fecha_entrega" value="<%= values.fecha_entrega %>"><br><br>
+        <div>
+          <label class="text-sm text-slate-300">Vehículo</label>
+          <select name="vehiculo_id" required id="vehiculoSelect"
+                  class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40">
+            <option value="">-- Selecciona --</option>
+            <% vehiculos.forEach(v => { %>
+              <option
+                value="<%= v.id %>"
+                data-cliente="<%= v.cliente_id || '' %>"
+                <%= values.vehiculo_id==v.id ? 'selected' : '' %>
+              >
+                <%= v.marca %> <%= v.modelo %> (<%= v.placa %>)
+              </option>
+            <% }) %>
+          </select>
+          <p class="mt-2 text-xs text-slate-500">Se filtra automáticamente por cliente (si aplica).</p>
+        </div>
+      </div>
 
-<button>Guardar</button>
-</form>
+      <div class="mt-6">
+  <label class="text-sm text-slate-300">Servicios solicitados</label>
+  <div class="mt-3 grid sm:grid-cols-2 gap-3">
+    <% const serviciosBase = [
+      "Cambio de aceite",
+      "Afinación",
+      "Frenos",
+      "Suspensión",
+      "Diagnóstico",
+      "Alineación y balanceo",
+      "Cambio de llantas",
+      "Revisión de batería",
+      "Sistema eléctrico",
+      "Escaneo"
+    ]; %>
 
-<a href="/taller/ordenes">Volver</a>
+    <% serviciosBase.forEach(servicio => { %>
+      <label class="flex items-center gap-3 rounded-xl border border-white/10 bg-slate-950/40 px-4 py-3 cursor-pointer hover:bg-white/5">
+        <input
+          type="checkbox"
+          name="servicios[]"
+          value="<%= servicio %>"
+          <%= (values.servicios || []).includes(servicio) ? 'checked' : '' %>
+        />
+        <span class="text-sm text-slate-200"><%= servicio %></span>
+      </label>
+    <% }) %>
+  </div>
+  <p class="mt-2 text-xs text-slate-500">Puedes marcar varios servicios y complementar en la descripción.</p>
+</div>
+
+      <div class="mt-6">
+        <label class="text-sm text-slate-300">Descripción del servicio</label>
+        <textarea name="descripcion" rows="5" id="descripcion"
+          class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+          placeholder="Ej: Cambio de aceite + revisión de frenos. Se detecta ruido en suspensión delantera."><%= values.descripcion || '' %></textarea>
+        <div class="mt-2 flex items-center justify-between text-xs text-slate-500">
+          <span>Entre más claro, mejor el seguimiento.</span>
+          <span id="contador">0/280</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna 2: Entrega / Resumen -->
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Entrega & resumen</h3>
+      <p class="text-sm text-slate-300 mt-1">Define fecha estimada y revisa antes de guardar.</p>
+
+      <div class="mt-6 grid gap-4">
+  <div>
+    <label class="text-sm text-slate-300">Prioridad</label>
+    <select name="prioridad"
+      class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40">
+      <option value="BAJA" <%= values.prioridad === 'BAJA' ? 'selected' : '' %>>Baja</option>
+      <option value="MEDIA" <%= values.prioridad === 'MEDIA' ? 'selected' : '' %>>Media</option>
+      <option value="ALTA" <%= values.prioridad === 'ALTA' ? 'selected' : '' %>>Alta</option>
+      <option value="URGENTE" <%= values.prioridad === 'URGENTE' ? 'selected' : '' %>>Urgente</option>
+    </select>
+  </div>
+
+  <div>
+    <label class="text-sm text-slate-300">Kilometraje de entrada</label>
+    <input
+      type="number"
+      name="kilometraje"
+      min="0"
+      step="1"
+      value="<%= values.kilometraje || '' %>"
+      placeholder="Ej: 85420"
+      class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+    />
+    <p class="mt-2 text-xs text-slate-500">Opcional, pero recomendado para historial del vehículo.</p>
+  </div>
+
+  <div>
+  <label class="text-sm text-slate-300">Fecha estimada de entrega</label>
+  <input
+    type="datetime-local"
+    name="fecha_entrega"
+    value="<%= values.fecha_entrega || '' %>"
+    id="fechaEntrega"
+    class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+  />
+  <p class="mt-2 text-xs text-slate-500">
+    Puedes seleccionarla desde el calendario o escribirla manualmente, incluyendo la hora.
+  </p>
+  <p class="mt-2 text-xs text-slate-500">
+    Si queda vacía, la orden se crea sin fecha.
+  </p>
+</div>
+
+</div>
+
+      <div class="mt-2 text-sm text-slate-200 space-y-2">
+  <div><b>Cliente:</b> <span id="prevCliente">--</span></div>
+  <div><b>Vehículo:</b> <span id="prevVehiculo">--</span></div>
+  <div><b>Prioridad:</b> <span id="prevPrioridad"><%= values.prioridad || '--' %></span></div>
+  <div><b>Kilometraje:</b> <span id="prevKilometraje"><%= values.kilometraje || '--' %></span></div>
+  <div><b>Entrega:</b> <span id="prevEntrega">--</span></div>
+</div>
+
+      <button
+        class="mt-6 w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold"
+        type="submit"
+      >
+        Guardar orden
+      </button>
+
+      <div class="mt-4 text-xs text-slate-400">
+        Al crear la orden se registra un evento <b>CREADA</b> en la bitácora.
+      </div>
+    </div>
+  </form>
+</section>
+
+<script>
+  const clienteSelect = document.getElementById("clienteSelect");
+  const vehiculoSelect = document.getElementById("vehiculoSelect");
+  const descripcion = document.getElementById("descripcion");
+  const contador = document.getElementById("contador");
+  const fechaEntrega = document.getElementById("fechaEntrega");
+  const prioridadSelect = document.querySelector('select[name="prioridad"]');
+const kilometrajeInput = document.querySelector('input[name="kilometraje"]');
+const prevPrioridad = document.getElementById("prevPrioridad");
+const prevKilometraje = document.getElementById("prevKilometraje");
+
+  const prevCliente = document.getElementById("prevCliente");
+  const prevVehiculo = document.getElementById("prevVehiculo");
+  const prevEntrega = document.getElementById("prevEntrega");
+
+  function actualizarContador() {
+    const max = 280;
+    if (descripcion.value.length > max) descripcion.value = descripcion.value.slice(0, max);
+    contador.textContent = `${descripcion.value.length}/${max}`;
+  }
+
+  function filtrarVehiculos() {
+    const clienteId = clienteSelect.value;
+    const opts = Array.from(vehiculoSelect.options);
+
+    // siempre deja la primera opción visible
+    opts.forEach((o, idx) => {
+      if (idx === 0) return;
+
+      const c = o.getAttribute("data-cliente");
+      // si no hay cliente_id en los datos, NO filtramos (para no romper)
+      if (!c) {
+        o.hidden = false;
+        return;
+      }
+      o.hidden = (clienteId && c !== clienteId);
+    });
+
+    // si el seleccionado quedó oculto, lo reseteamos
+    if (vehiculoSelect.selectedOptions.length) {
+      const sel = vehiculoSelect.selectedOptions[0];
+      if (sel.hidden) vehiculoSelect.value = "";
+    }
+  }
+
+  function actualizarPreview() {
+  prevCliente.textContent = clienteSelect.selectedOptions[0]?.textContent?.trim() || "--";
+  prevVehiculo.textContent = vehiculoSelect.selectedOptions[0]?.textContent?.trim() || "--";
+  prevPrioridad.textContent = prioridadSelect?.value || "--";
+  prevKilometraje.textContent = kilometrajeInput?.value || "--";
+
+  if (!fechaEntrega.value) {
+    prevEntrega.textContent = "--";
+  } else {
+    const fecha = new Date(fechaEntrega.value);
+    if (Number.isNaN(fecha.getTime())) {
+      prevEntrega.textContent = fechaEntrega.value.replace("T", " ");
+    } else {
+      prevEntrega.textContent = fecha.toLocaleString("es-MX", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+  }
+}
+
+  clienteSelect?.addEventListener("change", () => {
+    filtrarVehiculos();
+    actualizarPreview();
+  });
+
+  vehiculoSelect?.addEventListener("change", actualizarPreview);
+  fechaEntrega?.addEventListener("change", actualizarPreview);
+  descripcion?.addEventListener("input", actualizarContador);
+  prioridadSelect?.addEventListener("change", actualizarPreview);
+kilometrajeInput?.addEventListener("input", actualizarPreview);
+
+  // init
+  actualizarContador();
+  filtrarVehiculos();
+  actualizarPreview();
+</script>

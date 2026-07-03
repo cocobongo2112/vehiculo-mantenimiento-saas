@@ -1,0 +1,136 @@
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">CRM · SMART GARAGE</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold"><%= cliente.nombre %></h1>
+      <p class="mt-2 text-slate-300">Detalle del cliente y sus vehículos registrados.</p>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <a href="/taller/clientes"
+         class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        ← Volver
+      </a>
+
+      <a href="/taller/clientes/<%= cliente.id %>/edit"
+         class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        Editar
+      </a>
+
+      <form method="POST" action="/taller/clientes/<%= cliente.id %>/delete"
+            onsubmit="return confirm('¿Eliminar este cliente?');">
+        <button class="px-4 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-sm text-rose-200">
+          Eliminar
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Cards de info -->
+  <div class="mt-8 grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Información</h3>
+      <p class="text-sm text-slate-300 mt-1">Datos de contacto.</p>
+
+      <div class="mt-6 grid sm:grid-cols-2 gap-4 text-sm">
+        <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4">
+          <p class="text-xs text-slate-400">Teléfono</p>
+          <p class="mt-1 font-semibold text-slate-100"><%= cliente.telefono || "—" %></p>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4">
+          <p class="text-xs text-slate-400">Email</p>
+          <p class="mt-1 font-semibold text-slate-100"><%= cliente.email || "—" %></p>
+        </div>
+
+        <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4 sm:col-span-2">
+          <p class="text-xs text-slate-400">Dirección</p>
+          <p class="mt-1 text-slate-200"><%= cliente.direccion || "—" %></p>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        <!-- Opción pro: crear orden con cliente preseleccionado (lo implementamos en PASO 6) -->
+        <a href="/taller/ordenes/new?cliente_id=<%= cliente.id %>"
+           class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold text-sm">
+          + Crear orden para este cliente
+        </a>
+
+        <a href="/taller/vehiculos/new?cliente_id=<%= cliente.id %>"
+           class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+          + Registrar vehículo
+        </a>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Resumen</h3>
+      <p class="text-sm text-slate-300 mt-1">Relación con el taller.</p>
+
+      <div class="mt-6 rounded-2xl border border-white/10 bg-slate-900/50 p-4">
+        <p class="text-xs text-slate-400">Vehículos registrados</p>
+        <p class="mt-2 text-3xl font-extrabold"><%= (vehiculos?.length || 0) %></p>
+      </div>
+
+      <div class="mt-4 text-xs text-slate-400">
+        Este resumen ayuda para seguimiento y reportes.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla Vehículos -->
+  <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold">Vehículos del cliente</h3>
+      <span class="text-xs text-slate-400"><%= (vehiculos?.length || 0) %> registros</span>
+    </div>
+
+    <div class="mt-4 overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="text-slate-400">
+          <tr class="border-b border-white/10">
+            <th class="text-left py-3 pr-4">Marca</th>
+            <th class="text-left py-3 pr-4">Modelo</th>
+            <th class="text-left py-3 pr-4">Placa</th>
+            <th class="text-left py-3 pr-4">Año</th>
+            <th class="text-left py-3">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="text-slate-200">
+          <% if (vehiculos && vehiculos.length) { %>
+            <% vehiculos.forEach(v => { %>
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-3 pr-4 font-semibold"><%= v.marca || "-" %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= v.modelo || "-" %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= v.placa || "-" %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= v.anio || "-" %></td>
+                <td class="py-3">
+                  <div class="flex flex-wrap gap-2">
+                    <a href="/taller/ordenes/new?cliente_id=<%= cliente.id %>&vehiculo_id=<%= v.id %>"
+                       class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-xs">
+                      Crear orden
+                    </a>
+                    <a href="/taller/vehiculos/<%= v.id %>/edit"
+                       class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-xs">
+                      Editar
+                    </a>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="5" class="py-8 text-slate-400">
+                No hay vehículos registrados para este cliente.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 p-4 rounded-2xl bg-slate-900/60 border border-white/10 text-xs text-slate-300">
+      💡 Tip: Registra vehículos y crea órdenes para construir historial completo.
+    </div>
+  </div>
+</section>

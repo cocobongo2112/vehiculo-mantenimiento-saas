@@ -1,26 +1,236 @@
-<h1>Órdenes de Servicio</h1>
-<a href="/taller/ordenes/new">+ Nueva Orden</a>
-<br><br>
+<%
+  const dataOrdenes = (typeof ordenes !== "undefined" && ordenes)
+    ? ordenes
+    : (typeof rows !== "undefined" ? rows : []);
 
-<table border="1" cellpadding="8">
-<tr>
-  <th>ID</th><th>Folio</th><th>Cliente</th><th>Vehículo</th><th>Estado</th><th>Acciones</th>
-</tr>
+  const filtrosSafe = (typeof filtros !== "undefined" && filtros) ? filtros : {};
 
-<% ordenes.forEach(o => { %>
-<tr>
-  <td><%= o.id %></td>
-  <td><a href="/taller/ordenes/<%= o.id %>"><%= o.folio %></a></td>
-  <td><%= o.cliente %></td>
-  <td><%= o.marca %> <%= o.modelo %> (<%= o.placa %>)</td>
-  <td><%= o.estado %></td>
-  <td>
-    <form action="/taller/ordenes/<%= o.id %>/delete" method="POST" style="display:inline;">
-      <button>Eliminar</button>
-    </form>
-  </td>
-</tr>
-<% }) %>
-</table>
+  const badge = (estado) => {
+    if (estado === "RECIBIDO") return "bg-cyan-500/15 border-cyan-400/20 text-cyan-200";
+    if (estado === "EN_PROCESO") return "bg-indigo-500/15 border-indigo-400/20 text-indigo-200";
+    if (estado === "LISTO") return "bg-emerald-500/15 border-emerald-400/20 text-emerald-200";
+    if (estado === "ENTREGADO") return "bg-slate-500/15 border-slate-400/20 text-slate-200";
+    return "bg-white/10 border-white/10 text-slate-200";
+  };
 
-<a href="/taller/dashboard">Volver</a>
+  const badgePrioridad = (prioridad) => {
+    if (prioridad === "BAJA") return "bg-sky-500/15 border-sky-400/20 text-sky-200";
+    if (prioridad === "MEDIA") return "bg-amber-500/15 border-amber-400/20 text-amber-200";
+    if (prioridad === "ALTA") return "bg-orange-500/15 border-orange-400/20 text-orange-200";
+    if (prioridad === "URGENTE") return "bg-rose-500/15 border-rose-400/20 text-rose-200";
+    return "bg-white/10 border-white/10 text-slate-200";
+  };
+
+  const formatFechaHora = (valor) => {
+  if (!valor) return "-";
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return valor;
+
+  return fecha.toLocaleString("es-MX", {
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+};
+
+%>
+
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">TALLER · SMART GARAGE</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Órdenes de Servicio</h1>
+      <p class="mt-2 text-slate-300">
+        Administra el flujo completo: <b>RECIBIDO</b> → <b>EN_PROCESO</b> → <b>LISTO</b> → <b>ENTREGADO</b>.
+      </p>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+      <a href="/taller/ordenes/new"
+         class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold text-sm">
+        + Nueva Orden
+      </a>
+      <a href="/taller/dashboard"
+         class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        Volver
+      </a>
+    </div>
+  </div>
+
+  <form class="mt-8 grid md:grid-cols-5 gap-3 items-end" method="GET" action="/taller/ordenes">
+    <div class="md:col-span-2">
+      <label class="text-sm text-slate-300">Buscar (folio/cliente/placa)</label>
+      <input name="q" value="<%= filtrosSafe.q || '' %>"
+             class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+             placeholder="Ej: OS-662126, Felipe, NCE345J" />
+    </div>
+
+    <div>
+      <label class="text-sm text-slate-300">Estado</label>
+      <select name="estado"
+              class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40">
+        <option value="" <%= !filtrosSafe.estado ? 'selected' : '' %>>Todos</option>
+        <option value="RECIBIDO" <%= filtrosSafe.estado==='RECIBIDO'?'selected':'' %>>RECIBIDO</option>
+        <option value="EN_PROCESO" <%= filtrosSafe.estado==='EN_PROCESO'?'selected':'' %>>EN_PROCESO</option>
+        <option value="LISTO" <%= filtrosSafe.estado==='LISTO'?'selected':'' %>>LISTO</option>
+        <option value="ENTREGADO" <%= filtrosSafe.estado==='ENTREGADO'?'selected':'' %>>ENTREGADO</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="text-sm text-slate-300">Desde</label>
+      <input type="date" name="desde" value="<%= filtrosSafe.desde || '' %>"
+             class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40" />
+    </div>
+
+    <div>
+      <label class="text-sm text-slate-300">Hasta</label>
+      <input type="date" name="hasta" value="<%= filtrosSafe.hasta || '' %>"
+             class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40" />
+    </div>
+
+    <div class="md:col-span-5 flex flex-wrap gap-2 mt-2">
+      <button class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        Aplicar filtros
+      </button>
+      <a href="/taller/ordenes" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm">
+        Limpiar
+      </a>
+    </div>
+  </form>
+
+  <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold">Listado</h3>
+      <span class="text-xs text-slate-400">Mostrando <%= (dataOrdenes?.length || 0) %> de <%= (pag?.total || 0) %></span>
+    </div>
+
+    <div class="mt-4 overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="text-slate-400">
+          <tr class="border-b border-white/10">
+            <th class="text-left py-3 pr-4">Folio</th>
+            <th class="text-left py-3 pr-4">Estado</th>
+            <th class="text-left py-3 pr-4">Prioridad</th>
+            <th class="text-left py-3 pr-4">Cliente</th>
+            <th class="text-left py-3 pr-4">Vehículo</th>
+            <th class="text-left py-3 pr-4">KM</th>
+            <th class="text-left py-3 pr-4">Creación</th>
+            <th class="text-left py-3 pr-4">Entrega</th>
+            <th class="text-left py-3">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody class="text-slate-200">
+          <% if (dataOrdenes && dataOrdenes.length) { %>
+            <% dataOrdenes.forEach(o => { %>
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-3 pr-4 font-semibold"><%= o.folio %></td>
+
+                <td class="py-3 pr-4">
+                  <span class="px-2 py-1 rounded-full text-xs border <%= badge(o.estado) %>">
+                    <%= o.estado %>
+                  </span>
+                </td>
+
+                <td class="py-3 pr-4">
+                  <span class="px-2 py-1 rounded-full text-xs border <%= badgePrioridad(o.prioridad || 'MEDIA') %>">
+                    <%= o.prioridad || "MEDIA" %>
+                  </span>
+                </td>
+
+                <td class="py-3 pr-4 text-slate-300"><%= o.cliente || o.cliente_nombre || '-' %></td>
+
+                <td class="py-3 pr-4 text-slate-300">
+                  <%= (o.marca || '') %> <%= (o.modelo || '') %>
+                  <% if (o.placa) { %>(<%= o.placa %>)<% } %>
+                </td>
+
+                <td class="py-3 pr-4 text-slate-300"><%= o.kilometraje || '-' %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= o.created_at || '-' %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= formatFechaHora(o.fecha_entrega) %></td>
+
+                <td class="py-3">
+                  <div class="flex flex-wrap gap-2">
+                    <a href="/taller/ordenes/<%= o.id %>"
+                       class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-xs">
+                      Ver
+                    </a>
+
+                    <form method="POST" action="/taller/ordenes/<%= o.id %>/estado" class="inline-flex gap-2">
+                      <select name="estado" class="px-2 py-2 rounded-xl bg-slate-950/60 border border-white/10 text-xs">
+                        <option value="RECIBIDO" <%= o.estado==='RECIBIDO'?'selected':'' %>>RECIBIDO</option>
+                        <option value="EN_PROCESO" <%= o.estado==='EN_PROCESO'?'selected':'' %>>EN_PROCESO</option>
+                        <option value="LISTO" <%= o.estado==='LISTO'?'selected':'' %>>LISTO</option>
+                        <option value="ENTREGADO" <%= o.estado==='ENTREGADO'?'selected':'' %>>ENTREGADO</option>
+                      </select>
+                      <button class="px-3 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-xs">
+                        Guardar
+                      </button>
+                    </form>
+
+                    <form method="POST" action="/taller/ordenes/<%= o.id %>/delete" onsubmit="return confirm('¿Eliminar esta orden?');">
+                      <button class="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-xs">
+                        Eliminar
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="9" class="py-8 text-slate-400">
+                No hay órdenes. Crea la primera con <b>+ Nueva Orden</b>.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <%
+      const p = pag || { page: 1, totalPages: 1, limit: 10, total: 0 };
+      const qs = (obj) => {
+        const u = new URLSearchParams();
+        Object.entries(obj).forEach(([k,v]) => { if (v) u.set(k, v); });
+        return u.toString();
+      };
+
+      const baseParams = {
+        q: filtrosSafe.q || "",
+        estado: filtrosSafe.estado || "",
+        desde: filtrosSafe.desde || "",
+        hasta: filtrosSafe.hasta || "",
+        limit: String(p.limit)
+      };
+
+      const prevHref = "/taller/ordenes?" + qs({ ...baseParams, page: String(Math.max(1, p.page - 1)) });
+      const nextHref = "/taller/ordenes?" + qs({ ...baseParams, page: String(Math.min(p.totalPages, p.page + 1)) });
+    %>
+
+    <div class="mt-6 flex items-center justify-between">
+      <% if (p.page > 1) { %>
+        <a href="<%= prevHref %>" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10">← Prev</a>
+      <% } else { %>
+        <span></span>
+      <% } %>
+
+      <div class="text-sm text-slate-300">
+        Página <b><%= p.page %></b> de <b><%= p.totalPages %></b> · Total: <b><%= p.total %></b>
+      </div>
+
+      <% if (p.page < p.totalPages) { %>
+        <a href="<%= nextHref %>" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10">Next →</a>
+      <% } else { %>
+        <span></span>
+      <% } %>
+    </div>
+
+    <div class="mt-6 p-4 rounded-2xl bg-slate-900/60 border border-white/10 text-xs text-slate-300">
+      💡 Pro tip: Cuando cambias el estado a <b>LISTO</b>, se dispara la notificación por Telegram con n8n.
+    </div>
+  </div>
+</section>

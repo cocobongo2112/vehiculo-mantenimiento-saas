@@ -5,63 +5,626 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><%= title %></title>
   <style>
-    body{ font-family: Arial; padding: 20px; }
-    #box{ width: 420px; border:1px solid #ccc; padding:12px; border-radius:10px; }
-    #msgs{ height: 260px; overflow:auto; border:1px solid #eee; padding:10px; margin-bottom:10px; }
-    .m{ margin:6px 0; }
-    .bot{ color:#0b5; }
-    .me{ color:#06c; text-align:right; }
-    input{ width: 75%; padding:8px; }
-    button{ padding:8px 12px; }
+    :root{
+      --bg-1:#07111f;
+      --bg-2:#0b1730;
+      --card:rgba(255,255,255,.06);
+      --card-2:rgba(255,255,255,.04);
+      --line:rgba(255,255,255,.10);
+      --text:#e5eefc;
+      --muted:#9fb0c9;
+      --cyan:#38bdf8;
+      --indigo:#6366f1;
+      --green:#22c55e;
+      --danger:#fb7185;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:24px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,.15), transparent 28%),
+        radial-gradient(circle at top right, rgba(99,102,241,.16), transparent 30%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .page{
+      width:min(1100px, 100%);
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .hero,
+    .chat-card{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius:32px;
+      box-shadow:var(--shadow);
+    }
+
+    .hero{
+      padding:34px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:auto -80px -80px auto;
+      width:240px;
+      height:240px;
+      background:radial-gradient(circle, rgba(56,189,248,.24), transparent 70%);
+      pointer-events:none;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(56,189,248,.20);
+      background:rgba(56,189,248,.10);
+      color:#bfeaff;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-weight:700;
+    }
+
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--green);
+      box-shadow:0 0 14px rgba(34,197,94,.65);
+      flex:none;
+    }
+
+    .hero h1{
+      margin:18px 0 12px;
+      font-size:clamp(32px, 5vw, 54px);
+      line-height:1.05;
+      font-weight:900;
+      letter-spacing:-.03em;
+    }
+
+    .grad{
+      background:linear-gradient(90deg, var(--cyan), #c084fc);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.7;
+      max-width:58ch;
+    }
+
+    .features{
+      margin-top:28px;
+      display:grid;
+      gap:14px;
+    }
+
+    .feature{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      padding:16px 18px;
+      border-radius:20px;
+      border:1px solid var(--line);
+      background:var(--card-2);
+    }
+
+    .feature .icon{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(56,189,248,.18), rgba(99,102,241,.18));
+      border:1px solid rgba(255,255,255,.10);
+      font-size:18px;
+      flex:none;
+    }
+
+    .feature h3{
+      margin:0 0 4px;
+      font-size:15px;
+    }
+
+    .feature p{
+      margin:0;
+      font-size:13px;
+      line-height:1.55;
+      color:var(--muted);
+    }
+
+    .quick{
+      margin-top:26px;
+    }
+
+    .quick-title{
+      color:#c6d4ea;
+      font-size:13px;
+      margin-bottom:10px;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .chip{
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      border-radius:999px;
+      padding:10px 14px;
+      cursor:pointer;
+      transition:.2s ease;
+      font-size:13px;
+    }
+
+    .chip:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.09);
+    }
+
+    .chat-card{
+      padding:20px;
+      display:flex;
+      flex-direction:column;
+      min-height:700px;
+    }
+
+    .chat-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:8px 8px 18px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .bot-meta{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+
+    .bot-avatar{
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg, rgba(56,189,248,.22), rgba(99,102,241,.25));
+      border:1px solid rgba(255,255,255,.12);
+      font-size:24px;
+    }
+
+    .bot-meta h2{
+      margin:0;
+      font-size:18px;
+    }
+
+    .bot-meta p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .status-pill{
+      border:1px solid rgba(34,197,94,.25);
+      background:rgba(34,197,94,.10);
+      color:#c9ffd9;
+      border-radius:999px;
+      padding:9px 12px;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+    #msgs{
+      flex:1;
+      overflow:auto;
+      padding:20px 8px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      scrollbar-width:thin;
+    }
+
+    .row{
+      display:flex;
+      width:100%;
+    }
+
+    .row.bot-row{ justify-content:flex-start; }
+    .row.me-row{ justify-content:flex-end; }
+
+    .bubble{
+      max-width:82%;
+      padding:14px 16px;
+      border-radius:20px;
+      line-height:1.55;
+      white-space:pre-wrap;
+      word-break:break-word;
+      border:1px solid var(--line);
+      animation:show .18s ease;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+      font-size:14px;
+    }
+
+    .bot{
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
+      color:var(--text);
+      border-top-left-radius:8px;
+    }
+
+    .me{
+      background:linear-gradient(135deg, rgba(56,189,248,.95), rgba(99,102,241,.95));
+      color:white;
+      border-color:transparent;
+      border-top-right-radius:8px;
+    }
+
+    .msg-time{
+      margin-top:6px;
+      font-size:11px;
+      opacity:.7;
+    }
+
+    .empty-note{
+      margin:8px 8px 0;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
+
+    .composer{
+      margin-top:12px;
+      border-top:1px solid var(--line);
+      padding-top:16px;
+    }
+
+    #chatForm{
+      display:flex;
+      gap:10px;
+      align-items:stretch;
+    }
+
+    .input-wrap{
+      flex:1;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      border:1px solid var(--line);
+      background:rgba(8,15,28,.72);
+      border-radius:18px;
+      padding:0 14px;
+      min-height:58px;
+    }
+
+    .input-wrap span{
+      font-size:18px;
+      opacity:.9;
+    }
+
+    #txt{
+      flex:1;
+      border:none;
+      outline:none;
+      background:transparent;
+      color:var(--text);
+      font-size:15px;
+      min-width:0;
+    }
+
+    #txt::placeholder{
+      color:#7f93b2;
+    }
+
+    .send-btn{
+      border:none;
+      cursor:pointer;
+      min-width:140px;
+      border-radius:18px;
+      background:linear-gradient(90deg, var(--cyan), var(--indigo));
+      color:#03101f;
+      font-weight:800;
+      font-size:14px;
+      transition:.2s ease;
+      box-shadow:0 14px 28px rgba(56,189,248,.22);
+    }
+
+    .send-btn:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.04);
+    }
+
+    .send-btn:disabled{
+      opacity:.65;
+      cursor:not-allowed;
+      transform:none;
+    }
+
+    .help{
+      display:flex;
+      justify-content:space-between;
+      gap:14px;
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      flex-wrap:wrap;
+    }
+
+    .typing{
+      display:inline-flex;
+      gap:5px;
+      align-items:center;
+      padding:12px 14px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.05);
+      width:max-content;
+    }
+
+    .typing span{
+      width:7px;
+      height:7px;
+      border-radius:50%;
+      background:#b8c8df;
+      animation:blink 1s infinite ease-in-out;
+    }
+
+    .typing span:nth-child(2){ animation-delay:.15s; }
+    .typing span:nth-child(3){ animation-delay:.3s; }
+
+    @keyframes blink{
+      0%, 80%, 100% { transform:scale(.8); opacity:.4; }
+      40% { transform:scale(1); opacity:1; }
+    }
+
+    @keyframes show{
+      from{ opacity:0; transform:translateY(6px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+
+    @media (max-width: 980px){
+      .page{
+        grid-template-columns:1fr;
+      }
+
+      .chat-card{
+        min-height:620px;
+      }
+    }
+
+    @media (max-width: 640px){
+      body{ padding:16px; }
+      .hero, .chat-card{ border-radius:24px; }
+      .hero{ padding:24px; }
+      .chat-card{ padding:16px; min-height:560px; }
+      .bubble{ max-width:90%; }
+      #chatForm{ flex-direction:column; }
+      .send-btn{ min-height:54px; width:100%; }
+      .status-pill{ display:none; }
+    }
   </style>
 </head>
 <body>
-  <h1>Chatbot - Estado de tu vehículo</h1>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="dot"></span>
+        Smart Garage · Asistente virtual
+      </div>
 
-  <div id="box">
-    <div id="msgs"></div>
+      <h1>Consulta el estado de tu <span class="grad">vehículo</span></h1>
 
-    <form id="chatForm">
-      <input id="txt" placeholder="Escribe tu folio (ej: OS-123456)" autocomplete="off" />
-      <button>Enviar</button>
-    </form>
-  </div>
+      <p>
+        Escribe tu folio de servicio para revisar el estado actual de tu orden.
+        El asistente te responderá con la información registrada en el sistema.
+      </p>
+
+      <div class="features">
+        <article class="feature">
+          <div class="icon">📋</div>
+          <div>
+            <h3>Consulta rápida por folio</h3>
+            <p>Solo necesitas tu folio de servicio, por ejemplo: OS-123456.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <div class="icon">🚗</div>
+          <div>
+            <h3>Seguimiento del vehículo</h3>
+            <p>Verifica si la orden está recibida, en proceso, lista o entregada.</p>
+          </div>
+        </article>
+
+        <article class="feature">
+          <div class="icon">🤖</div>
+          <div>
+            <h3>Atención automatizada</h3>
+            <p>La consulta se procesa automáticamente para una respuesta más ágil.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="quick">
+        <div class="quick-title">Prueba rápida con ejemplos:</div>
+        <div class="chips">
+          <button class="chip" type="button" data-folio="OS-123456">OS-123456</button>
+          <button class="chip" type="button" data-folio="OS-662126">OS-662126</button>
+          <button class="chip" type="button" data-folio="OS-999001">OS-999001</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="chat-card">
+      <div class="chat-top">
+        <div class="bot-meta">
+          <div class="bot-avatar">💬</div>
+          <div>
+            <h2>Chatbot Smart Garage</h2>
+            <p>Estado de órdenes de servicio en tiempo real</p>
+          </div>
+        </div>
+
+        <div class="status-pill">En línea</div>
+      </div>
+
+      <div id="msgs"></div>
+
+      <div class="empty-note">
+        Consulta tu folio y recibe una respuesta automática del sistema.
+      </div>
+
+      <div class="composer">
+        <form id="chatForm">
+          <div class="input-wrap">
+            <span>🔎</span>
+            <input
+              id="txt"
+              placeholder="Escribe tu folio, por ejemplo: OS-123456"
+              autocomplete="off"
+            />
+          </div>
+
+          <button class="send-btn" id="sendBtn">Enviar</button>
+        </form>
+
+        <div class="help">
+          <span>Tip: usa el formato del folio tal como aparece en tu orden.</span>
+          <span id="statusText">Listo para consultar</span>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
     const msgs = document.getElementById("msgs");
     const form = document.getElementById("chatForm");
     const txt = document.getElementById("txt");
+    const sendBtn = document.getElementById("sendBtn");
+    const statusText = document.getElementById("statusText");
+    const chips = document.querySelectorAll(".chip");
 
-    function add(text, cls){
-      const div = document.createElement("div");
-      div.className = "m " + cls;
-      div.textContent = text;
-      msgs.appendChild(div);
+    function horaActual() {
+      return new Date().toLocaleTimeString("es-MX", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function add(text, cls) {
+      const row = document.createElement("div");
+      row.className = `row ${cls === "bot" ? "bot-row" : "me-row"}`;
+
+      const bubble = document.createElement("div");
+      bubble.className = `bubble ${cls}`;
+      bubble.innerHTML = `
+        <div>${String(text).replace(/\n/g, "<br>")}</div>
+        <div class="msg-time">${horaActual()}</div>
+      `;
+
+      row.appendChild(bubble);
+      msgs.appendChild(row);
       msgs.scrollTop = msgs.scrollHeight;
     }
 
-    add("Hola 👋 Escribe tu folio para consultar el estado de tu vehículo.", "bot");
+    function addTyping() {
+      const row = document.createElement("div");
+      row.className = "row bot-row";
+      row.id = "typingRow";
+      row.innerHTML = `
+        <div class="typing">
+          <span></span><span></span><span></span>
+        </div>
+      `;
+      msgs.appendChild(row);
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function removeTyping() {
+      const typing = document.getElementById("typingRow");
+      if (typing) typing.remove();
+    }
+
+    async function consultarFolio(folio) {
+      if (!folio) return;
+
+      add(folio, "me");
+      txt.value = "";
+      txt.focus();
+
+      sendBtn.disabled = true;
+      statusText.textContent = "Consultando folio...";
+      addTyping();
+
+      try {
+        const res = await fetch(`/api/chatbot/estado?folio=${encodeURIComponent(folio)}`);
+        const data = await res.json();
+
+        removeTyping();
+
+        if (!data.ok) {
+          add(data.msg || "No pude procesar tu solicitud.", "bot");
+          statusText.textContent = "Consulta finalizada";
+          sendBtn.disabled = false;
+          return;
+        }
+
+        add(data.msg, "bot");
+        statusText.textContent = "Consulta finalizada";
+      } catch (err) {
+        removeTyping();
+        add("Error de conexión. Intenta de nuevo en un momento.", "bot");
+        statusText.textContent = "Error de conexión";
+      }
+
+      sendBtn.disabled = false;
+    }
+
+    add("Hola 👋\nSoy el asistente de Smart Garage.\nEscribe tu folio para consultar el estado de tu vehículo.", "bot");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const folio = txt.value.trim();
-      if(!folio) return;
+      if (!folio) return;
+      await consultarFolio(folio);
+    });
 
-      add(folio, "me");
-      txt.value = "";
-
-      try{
-        const res = await fetch(`/api/chatbot/estado?folio=${encodeURIComponent(folio)}`);
-        const data = await res.json();
-
-        if(!data.ok){
-          add(data.msg || "No pude procesar tu solicitud.", "bot");
-          return;
-        }
-        add(data.msg, "bot");
-      }catch(err){
-        add("Error de conexión. Intenta de nuevo.", "bot");
-      }
+    chips.forEach(chip => {
+      chip.addEventListener("click", async () => {
+        const folio = chip.dataset.folio;
+        txt.value = folio;
+        await consultarFolio(folio);
+      });
     });
   </script>
 </body>

@@ -1,19 +1,69 @@
-<h1>Nuevo Cliente</h1>
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">CRM · SMART GARAGE</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Nuevo Cliente</h1>
+      <p class="mt-2 text-slate-300">Registra contacto y datos para el historial del taller.</p>
+    </div>
 
-<% if(error){ %>
-<p style="color:red;"><%= error %></p>
-<% } %>
+    <a href="/taller/clientes" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+      ← Volver a clientes
+    </a>
+  </div>
 
-<form method="POST">
-  Nombre:<br>
-  <input name="nombre" value="<%= values.nombre %>" required><br><br>
-  Teléfono:<br>
-  <input name="telefono" value="<%= values.telefono %>"><br><br>
-  Email:<br>
-  <input name="email" value="<%= values.email %>"><br><br>
-  Dirección:<br>
-  <input name="direccion" value="<%= values.direccion %>"><br><br>
+  <% if (typeof error !== "undefined" && error) { %>
+    <div class="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-rose-200 text-sm">
+      <b>Error:</b> <%= error %>
+    </div>
+  <% } %>
 
-  <button>Guardar</button>
-</form>
-<a href="/taller/clientes">Volver</a>
+  <form method="POST" class="mt-8 grid lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Datos del cliente</h3>
+      <p class="text-sm text-slate-300 mt-1">Completa la información principal.</p>
+
+      <div class="mt-6 grid md:grid-cols-2 gap-4">
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-300">Nombre</label>
+          <input name="nombre" required value="<%= values?.nombre || '' %>"
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Ej: Juan Pérez" />
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-300">Teléfono</label>
+          <input name="telefono" value="<%= values?.telefono || '' %>"
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Ej: 4421234567" />
+        </div>
+
+        <div>
+          <label class="text-sm text-slate-300">Email</label>
+          <input name="email" type="email" value="<%= values?.email || '' %>"
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Ej: cliente@mail.com" />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="text-sm text-slate-300">Dirección</label>
+          <input name="direccion" value="<%= values?.direccion || '' %>"
+            class="mt-2 w-full rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+            placeholder="Calle, número, colonia, ciudad..." />
+        </div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <h3 class="text-lg font-semibold">Guardar</h3>
+      <p class="text-sm text-slate-300 mt-1">Confirma y registra en CRM.</p>
+
+      <button class="mt-6 w-full px-5 py-3 rounded-2xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold">
+        Guardar cliente
+      </button>
+
+      <div class="mt-4 text-xs text-slate-400">
+        Después podrás registrar vehículos asociados a este cliente.
+      </div>
+    </div>
+  </form>
+</section>
