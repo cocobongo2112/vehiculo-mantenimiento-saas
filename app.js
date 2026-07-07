@@ -47,6 +47,25 @@
   app.use("/admin/reportes", require("./src/routes/admin.reportes.routes"));
   app.use("/api/search", require("./src/routes/api.search.routes"));
 
-  // Server
-  const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
+// Routes
+app.use("/", require("./src/routes/index.routes"));
+app.use("/auth", require("./src/routes/auth.routes"));
+app.use("/taller", require("./src/routes/taller.routes"));
+app.use("/admin", require("./src/routes/admin.routes"));
+app.use("/admin/users", require("./src/routes/admin.users.routes"));
+app.use("/taller/clientes", require("./src/routes/taller.clientes.routes"));
+app.use("/taller/vehiculos", require("./src/routes/taller.vehiculos.routes"));
+app.use("/taller/ordenes", require("./src/routes/taller.ordenes.routes"));
+app.use("/api/chatbot", require("./src/routes/api.chatbot.routes"));
+app.use("/", require("./src/routes/public.routes"));
+app.use("/admin/reportes", require("./src/routes/admin.reportes.routes"));
+app.use("/api/search", require("./src/routes/api.search.routes"));
+
+const cartApiRoutes = require("./src/routes/api.cart.routes");
+const legalRoutes = require("./src/routes/legal.routes");
+app.use("/api/cart", cartApiRoutes);
+app.use("/legal", legalRoutes);
+
+// Server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
