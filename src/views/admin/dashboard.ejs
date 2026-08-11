@@ -1,48 +1,162 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %></title>
-</head>
-<body>
-  <h1>Dashboard Administrador</h1>
-  <p>Bienvenido: <b><%= userSession.nombre %></b> (<%= userSession.role %>)</p>
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">ADMIN · SMART GARAGE</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Dashboard Administrativo</h1>
+      <p class="mt-2 text-slate-300">Métricas generales, estado de órdenes y control de usuarios.</p>
+    </div>
 
-  <h3>Métricas generales</h3>
-  <ul>
-    <li><b>Usuarios:</b> <%= kpis.usuarios %> (Activos: <%= kpis.usuariosActivos %>)</li>
-    <li><b>Clientes:</b> <%= kpis.clientes %></li>
-    <li><b>Vehículos:</b> <%= kpis.vehiculos %></li>
-    <li><b>Órdenes:</b> <%= kpis.ordenes %></li>
-  </ul>
+    <div class="flex gap-2">
+      <a href="/admin/users" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        Usuarios
+      </a>
+      <a href="/admin/reportes" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        Reportes
+      </a>
+    </div>
+  </div>
 
-  <h3>Órdenes por estado</h3>
-  <ul>
-    <% ordenesPorEstado.forEach(o => { %>
-      <li><b><%= o.estado %>:</b> <%= o.cantidad %></li>
-    <% }) %>
-  </ul>
+  <!-- KPIs -->
+  <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Usuarios</p>
+          <p class="mt-2 text-3xl font-extrabold"><%= kpis.usuarios %></p>
+          <p class="mt-1 text-xs text-slate-500">Registrados</p>
+        </div>
+        <div class="text-3xl">👥</div>
+      </div>
+    </div>
 
-  <h3>Últimos usuarios registrados</h3>
-  <table border="1" cellpadding="8">
-    <tr>
-      <th>ID</th><th>Nombre</th><th>Email</th><th>Activo</th><th>Fecha</th>
-    </tr>
-    <% ultimosUsuarios.forEach(u => { %>
-      <tr>
-        <td><%= u.id %></td>
-        <td><%= u.nombre %></td>
-        <td><%= u.email %></td>
-        <td><%= u.activo ? "Sí" : "No" %></td>
-        <td><%= u.created_at %></td>
-      </tr>
-    <% }) %>
-  </table>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Activos</p>
+          <p class="mt-2 text-3xl font-extrabold"><%= kpis.usuariosActivos %></p>
+          <p class="mt-1 text-xs text-slate-500">Usuarios</p>
+        </div>
+        <div class="text-3xl">✅</div>
+      </div>
+    </div>
 
-  <br>
-  <a href="/admin/reportes">Ver reportes</a>
-  <a href="/admin/users">Gestionar usuarios</a> |
-  <a href="/auth/logout">Cerrar sesión</a>
-</body>
-</html>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Clientes</p>
+          <p class="mt-2 text-3xl font-extrabold"><%= kpis.clientes %></p>
+          <p class="mt-1 text-xs text-slate-500">CRM</p>
+        </div>
+        <div class="text-3xl">🧑‍💼</div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Vehículos</p>
+          <p class="mt-2 text-3xl font-extrabold"><%= kpis.vehiculos %></p>
+          <p class="mt-1 text-xs text-slate-500">Registrados</p>
+        </div>
+        <div class="text-3xl">🚗</div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="text-sm text-slate-400">Órdenes</p>
+          <p class="mt-2 text-3xl font-extrabold"><%= kpis.ordenes %></p>
+          <p class="mt-1 text-xs text-slate-500">Servicio</p>
+        </div>
+        <div class="text-3xl">🧾</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-8 grid lg:grid-cols-3 gap-6">
+    <!-- Órdenes por estado -->
+    <div class="lg:col-span-1 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">Órdenes por estado</h3>
+        <span class="text-xs text-slate-400">Resumen</span>
+      </div>
+
+      <div class="mt-4 space-y-3">
+        <% if (ordenesPorEstado && ordenesPorEstado.length) { %>
+          <% ordenesPorEstado.forEach(s => { %>
+            <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10 flex items-center justify-between">
+              <div class="text-sm font-semibold"><%= s.estado %></div>
+              <div class="text-xl font-extrabold"><%= s.cantidad %></div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="p-4 rounded-2xl bg-slate-900/60 border border-white/10 text-slate-400">
+            Sin datos aún.
+          </div>
+        <% } %>
+      </div>
+
+      <div class="mt-5">
+        <a href="/admin/reportes" class="inline-flex px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+          Ver reportes →
+        </a>
+      </div>
+    </div>
+
+    <!-- Últimos usuarios -->
+    <div class="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-6">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold">Últimos usuarios</h3>
+        <span class="text-xs text-slate-400">Top 5</span>
+      </div>
+
+      <div class="mt-4 overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="text-slate-400">
+            <tr class="border-b border-white/10">
+              <th class="text-left py-3 pr-4">Nombre</th>
+              <th class="text-left py-3 pr-4">Email</th>
+              <th class="text-left py-3 pr-4">Estado</th>
+              <th class="text-left py-3">Alta</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-200">
+            <% if (ultimosUsuarios && ultimosUsuarios.length) { %>
+              <% ultimosUsuarios.forEach(u => { %>
+                <tr class="border-b border-white/5 hover:bg-white/5">
+                  <td class="py-3 pr-4 font-semibold"><%= u.nombre %></td>
+                  <td class="py-3 pr-4 text-slate-300"><%= u.email %></td>
+                  <td class="py-3 pr-4">
+                    <% if (u.activo === 1) { %>
+                      <span class="px-2 py-1 rounded-full text-xs bg-emerald-500/15 border border-emerald-500/30 text-emerald-200">Activo</span>
+                    <% } else { %>
+                      <span class="px-2 py-1 rounded-full text-xs bg-rose-500/15 border border-rose-500/30 text-rose-200">Inactivo</span>
+                    <% } %>
+                  </td>
+                  <td class="py-3 text-slate-300"><%= u.created_at %></td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="4" class="py-6 text-slate-400">Sin usuarios para mostrar.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-5 flex flex-wrap gap-2">
+        <a href="/admin/users" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold text-sm">
+          Administrar usuarios
+        </a>
+        <a href="/busqueda" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+          Búsqueda (API)
+        </a>
+        <a href="/chat" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+          Chatbot
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

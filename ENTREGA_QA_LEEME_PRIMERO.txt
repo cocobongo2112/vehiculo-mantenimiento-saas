@@ -1,0 +1,17 @@
+SMART GARAGE — PREPARACIÓN PRÁCTICA FINAL DEPLOYMENT & QA
+
+1) Copia tu .env original a la raíz (NO se incluye en este ZIP por seguridad).
+2) Ejecuta en PowerShell:
+   .\scripts\setup-qa.ps1
+3) Ejecuta:
+   npm run test:unit
+   npm run test:integration
+   npm run test:e2e
+4) Para k6 en producción:
+   k6 run -e BASE_URL=https://TU-DOMINIO.com -e VUS=50 -e DURATION=30s tests/performance/k6-smoke.js
+5) Para Lighthouse:
+   $env:LIGHTHOUSE_URL="https://TU-DOMINIO.com"
+   npm run qa:lighthouse
+6) Revisa docs/QA_EXECUTION.md y docs/DEPLOYMENT_VPS.md.
+
+IMPORTANTE: no marques la versión como release estable hasta tener pruebas reales aprobadas en el entorno del equipo y HTTPS del VPS.

@@ -1,36 +1,138 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title><%= title %></title>
-</head>
-<body>
-<h1>Clientes</h1>
-<p>Usuario: <%= userSession.nombre %></p>
+<%
+  const dataClientes = (typeof clientes !== "undefined" && clientes)
+    ? clientes
+    : (typeof rows !== "undefined" ? rows : []);
 
-<a href="/taller/clientes/new">+ Nuevo Cliente</a>
-<br><br>
+  const q = (typeof filtros !== "undefined" && filtros?.q) ? filtros.q : (typeof query !== "undefined" ? query : "");
+%>
 
-<table border="1" cellpadding="8">
-<tr>
-  <th>ID</th><th>Nombre</th><th>Teléfono</th><th>Email</th><th>Acciones</th>
-</tr>
-<% clientes.forEach(c => { %>
-<tr>
-  <td><%= c.id %></td>
-  <td><%= c.nombre %></td>
-  <td><%= c.telefono %></td>
-  <td><%= c.email %></td>
-  <td>
-    <a href="/taller/clientes/<%= c.id %>/edit">Editar</a>
-    <form action="/taller/clientes/<%= c.id %>/delete" method="POST" style="display:inline;">
-      <button>Eliminar</button>
-    </form>
-  </td>
-</tr>
-<% }) %>
-</table>
+<section class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-white/0 p-8 md:p-12">
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+    <div>
+      <p class="text-cyan-300 text-sm tracking-wide">CRM · SMART GARAGE</p>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold">Clientes</h1>
+      <p class="mt-2 text-slate-300">
+        Administra tu cartera de clientes: contacto, historial y relación con vehículos/órdenes.
+      </p>
+    </div>
 
-<br>
-<a href="/taller/dashboard">Volver</a>
-</body>
-</html>
+    <div class="flex flex-wrap gap-2">
+      <a href="/taller/clientes/new"
+         class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-400 to-indigo-500 text-slate-950 font-semibold text-sm">
+        + Nuevo cliente
+      </a>
+      <a href="/taller/dashboard"
+         class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+        Volver
+      </a>
+    </div>
+  </div>
+
+  <!-- Mini KPIs -->
+  <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <p class="text-sm text-slate-400">Total clientes</p>
+      <p class="mt-2 text-3xl font-extrabold"><%= dataClientes.length %></p>
+      <p class="mt-1 text-xs text-slate-500">CRM activo</p>
+    </div>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <p class="text-sm text-slate-400">Con email</p>
+      <p class="mt-2 text-3xl font-extrabold">
+        <%= dataClientes.filter(c => (c.email||"").trim()).length %>
+      </p>
+      <p class="mt-1 text-xs text-slate-500">Contacto digital</p>
+    </div>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <p class="text-sm text-slate-400">Con teléfono</p>
+      <p class="mt-2 text-3xl font-extrabold">
+        <%= dataClientes.filter(c => (c.telefono||"").trim()).length %>
+      </p>
+      <p class="mt-1 text-xs text-slate-500">Seguimiento</p>
+    </div>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition">
+      <p class="text-sm text-slate-400">Con dirección</p>
+      <p class="mt-2 text-3xl font-extrabold">
+        <%= dataClientes.filter(c => (c.direccion||"").trim()).length %>
+      </p>
+      <p class="mt-1 text-xs text-slate-500">Ubicación</p>
+    </div>
+  </div>
+
+  <!-- Buscador (UI) -->
+  <form class="mt-8 flex flex-col md:flex-row gap-3" method="GET" action="/taller/clientes">
+    <input name="q" value="<%= q || '' %>"
+      class="flex-1 rounded-xl bg-slate-950/60 border border-white/10 px-4 py-3 outline-none focus:border-cyan-400/40"
+      placeholder="Buscar por nombre, email o teléfono…" />
+    <button class="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-sm">
+      Buscar
+    </button>
+    <a href="/taller/clientes" class="px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-sm">
+      Limpiar
+    </a>
+  </form>
+
+  <!-- Tabla -->
+  <div class="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between">
+      <h3 class="text-lg font-semibold">Listado</h3>
+      <span class="text-xs text-slate-400">Mostrando <%= dataClientes.length %> registros</span>
+    </div>
+
+    <div class="mt-4 overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="text-slate-400">
+          <tr class="border-b border-white/10">
+            <th class="text-left py-3 pr-4">Nombre</th>
+            <th class="text-left py-3 pr-4">Teléfono</th>
+            <th class="text-left py-3 pr-4">Email</th>
+            <th class="text-left py-3 pr-4">Dirección</th>
+            <th class="text-left py-3">Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody class="text-slate-200">
+          <% if (dataClientes.length) { %>
+            <% dataClientes.forEach(c => { %>
+              <tr class="border-b border-white/5 hover:bg-white/5">
+                <td class="py-3 pr-4 font-semibold"><%= c.nombre %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= c.telefono || "-" %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= c.email || "-" %></td>
+                <td class="py-3 pr-4 text-slate-300"><%= c.direccion || "-" %></td>
+                <td class="py-3">
+                  <div class="flex flex-wrap gap-2">
+                    <a href="/taller/clientes/<%= c.id %>"
+                       class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-xs">
+                      Ver
+                    </a>
+
+                    <a href="/taller/clientes/<%= c.id %>/edit"
+                       class="px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-xs">
+                      Editar
+                    </a>
+
+                    <form method="POST" action="/taller/clientes/<%= c.id %>/delete"
+                          onsubmit="return confirm('¿Desactivar cliente?');">
+                      <button class="px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-xs text-rose-200">
+                        Desactivar
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="5" class="py-8 text-slate-400">
+                No hay clientes aún. Crea el primero con <b>+ Nuevo cliente</b>.
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-6 p-4 rounded-2xl bg-slate-900/60 border border-white/10 text-xs text-slate-300">
+      💡 Tip: Mantén email y teléfono para mejorar notificaciones y seguimiento.
+    </div>
+  </div>
+</section>

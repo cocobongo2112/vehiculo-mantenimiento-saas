@@ -6,6 +6,8 @@ router.get("/", isAuth, isTaller, ctrl.list);
 router.get("/new", isAuth, isTaller, ctrl.viewCreate);
 router.post("/new", isAuth, isTaller, ctrl.create);
 
+router.get("/:id", isAuth, isTaller, ctrl.viewDetail);
+
 router.get("/:id/edit", isAuth, isTaller, ctrl.viewEdit);
 router.post("/:id/edit", isAuth, isTaller, ctrl.update);
 

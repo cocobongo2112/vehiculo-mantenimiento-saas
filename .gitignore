@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+npm-debug.log*
+.DS_Store
+qa-reports/
+playwright-report/
+test-results/
+coverage/
+nginx/certs/*.pem
+nginx/certs/*.key
+*.sql
+next-blueprint-demo/

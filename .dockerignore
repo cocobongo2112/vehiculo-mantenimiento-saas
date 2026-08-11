@@ -1,0 +1,11 @@
+.git
+node_modules
+npm-debug.log*
+.env
+nginx/certs
+qa-reports
+playwright-report
+test-results
+coverage
+*.zip
+*.mp4

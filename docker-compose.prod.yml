@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: smart-garage:${APP_VERSION:-latest}
+    container_name: smart-garage-app
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      APP_VERSION: ${APP_VERSION:-1.0.0}
+      PORT: 3000
+    expose:
+      - "3000"
+    restart: unless-stopped
+    networks:
+      - smartgarage
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: smart-garage-nginx
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./deploy/nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    restart: unless-stopped
+    networks:
+      - smartgarage
+
+networks:
+  smartgarage:
+    driver: bridge
