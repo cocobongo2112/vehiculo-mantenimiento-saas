@@ -67,9 +67,6 @@ exports.getAllByEmpresa = async (empresa_id, filtros = {}, page = 1, limit = 10)
   return await db.query(sql, params);
 };
 
-function cleanStr(v){ return (typeof v === "string") ? v.trim() : ""; }
-function toDateParam(d){ return d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : null; }
-
 exports.countByEmpresa = async (empresa_id, filtros = {}) => {
   const where = ["o.empresa_id = ?"];
   const params = [empresa_id];

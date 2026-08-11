@@ -37,6 +37,12 @@
       </div>
       <p class="mt-2 text-sm text-slate-300">Ingresa tus credenciales para continuar.</p>
 
+      <% if (registroOk) { %>
+        <div role="status" class="mt-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-emerald-200 text-sm">
+          Cuenta creada correctamente. Ya puedes iniciar sesión.
+        </div>
+      <% } %>
+
       <% if (error) { %>
         <div class="mt-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-rose-200 text-sm">
           <b>Error:</b> <%= error %>

@@ -19,10 +19,11 @@
 </head>
 
 <body class="min-h-screen bg-slate-950 text-slate-100">
+  <a href="#contenido-principal" class="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:m-3 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-slate-950">Saltar al contenido principal</a>
   <div class="bg-grid min-h-screen">
     <%- include("../partials/navbar") %>
 
-    <main class="max-w-6xl mx-auto px-4 py-10">
+    <main id="contenido-principal" class="max-w-6xl mx-auto px-4 py-10">
       <%- body %>
     </main>
 

@@ -3,14 +3,21 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "jest --runInBand",
+    "test:unit": "jest tests/unit --runInBand --coverage",
+    "test:integration": "jest tests/integration --runInBand",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "qa:k6": "k6 run tests/performance/k6-smoke.js",
+    "qa:lighthouse": "lhci autorun --config=qa/lighthouse/lighthouserc.js",
+    "qa:all": "npm run test:unit && npm run test:integration && npm run test:e2e && npm run qa:lighthouse"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Smart Garage SaaS - gestión de mantenimiento vehicular con QA, Docker y despliegue HTTPS",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.4",
@@ -23,6 +30,11 @@
     "pdfkit": "^0.17.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "local-ssl-proxy": "^2.0.5",
+    "nodemon": "^3.1.11",
+    "jest": "^30.0.5",
+    "supertest": "^7.1.4",
+    "@playwright/test": "^1.54.2",
+    "@lhci/cli": "^0.15.1"
   }
 }
